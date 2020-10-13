@@ -9,6 +9,7 @@ export default function TextFieldStylizedOutlined(props){
             variant={"outlined"}
             className={classes.textField}
             onChange={props.onChange}
+            className={props.className}
             align={"start"}
             label={props.label}
             error={props.error}
