@@ -1,5 +1,5 @@
 import {makeStyles} from "@material-ui/core/styles";
-import headerImage from '../Img/headerImage.png'
+import headerImage from '../../Img/headerImage.png'
 
 export const useStyle = makeStyles((theme) => ({
     root: {
