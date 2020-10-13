@@ -1,11 +1,16 @@
 import React from 'react';
-import CardObject from "./Components/CardObject/cardObject";
+import {useStyle} from "./style";
+//import CardObject from "./Components/CardObject/cardObject";
+import MenuForm from "./Components/MenuForm/menuForm";
 
 
 function App() {
+
+    const classes = useStyle();
+
     return (
-        <div>
-            <CardObject var1={18}></CardObject>
+        <div className={classes.div}>
+            <MenuForm></MenuForm>
         </div>
     );
 }

@@ -1,7 +1,13 @@
 import { makeStyles } from "@material-ui/core";
 
 export const useStyle = makeStyles((theme) => ({
-    textField:{
-        height:'350px',
+    body:{
+        margin:'0',
+        padding:'0',
+        height:'100vh'
+    },
+
+    div:{
+        height:'100%'
     }
 }));
