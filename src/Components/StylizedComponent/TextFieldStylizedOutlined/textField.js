@@ -1,15 +1,15 @@
 import React from "react";
 import TextField from "@material-ui/core/TextField";
 import {useStyle} from "./style";
+import clsx from "clsx";
 
 export default function TextFieldStylizedOutlined(props){
     const classes = useStyle()
     return(
         <TextField
             variant={"outlined"}
-            className={classes.textField}
+            className={clsx(classes.textField,props.className)}
             onChange={props.onChange}
-            className={props.className}
             align={"start"}
             label={props.label}
             error={props.error}
