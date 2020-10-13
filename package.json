@@ -10,7 +10,9 @@
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-scripts": "3.4.3",
-    "tobii": "^2.0.0-alpha"
+    "tobii": "^2.0.0-alpha",
+    "webfontloader": "^1.6.28",
+    "webfonts-loader": "^7.0.1"
   },
   "scripts": {
     "start": "react-scripts start",
