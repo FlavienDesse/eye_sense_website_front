@@ -22,7 +22,7 @@ export default function MainPage() {
                         </ButtonStylizedContained>
                     </Grid>
                     <Grid item xs={12}>
-                        <ButtonStylizedContained text="COMMENCER UNE CATÉGORIE"
+                        <ButtonStylizedContained text="AJOUTER UNE CATÉGORIE"
                                                  onClickFunction={() => {
                                                      console.log("clicked")
                                                  }
@@ -30,7 +30,7 @@ export default function MainPage() {
                         </ButtonStylizedContained>
                     </Grid>
                     <Grid item xs={12}>
-                        <ButtonStylizedContained text="COMMENCER UNE PHOTO"
+                        <ButtonStylizedContained text="AJOUTER UNE PHOTO"
                                                  onClickFunction={() => {
                                                      console.log("clicked")
                                                  }
