@@ -1,4 +1,11 @@
 import {createMuiTheme, responsiveFontSizes} from "@material-ui/core";
+import WebFont from 'webfontloader';
+
+WebFont.load({
+    google: {
+        families: ['Poppins']
+    }
+});
 
 export const theme = responsiveFontSizes(
     createMuiTheme({
@@ -8,7 +15,10 @@ export const theme = responsiveFontSizes(
             },
         },
         size: {
-            AppBarHeight: '120',
+            appBarHeight: '120',
+        },
+        font:{
+            Poppins:'Poppins'
         }
     })
 )
