@@ -7,15 +7,9 @@ export default function TextFieldStylizedOutlined(props){
     const classes = useStyle()
     return(
         <TextField
+            {...props}
             variant={"outlined"}
             className={clsx(classes.textField,props.className)}
-            onChange={props.onChange}
-            align={"start"}
-            label={props.label}
-            error={props.error}
-            fullWidth={props.fullWidth}
-            placeholder={props.placeholder}
-            defaultValue={props.defaultValue}
         />
     )
 }
