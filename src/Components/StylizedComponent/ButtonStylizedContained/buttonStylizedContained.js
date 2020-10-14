@@ -12,7 +12,7 @@ export default function ButtonStylizedContained(props) {
 
         <Button {...props}  className={clsx(classes.button,props.className)} variant="contained" color="primary" disableElevation
             onClick={props.onClickFunction}>
-            {props.textBefore}{props.text}
+            {props.textbefore}{props.text}
         </Button>
     )
 }

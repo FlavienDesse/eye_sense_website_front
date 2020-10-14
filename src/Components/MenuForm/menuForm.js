@@ -56,7 +56,7 @@ export default function MenuForm() {
             <Header/>
 
             <Container className={classes.global} maxWidth="xl">
-                <ButtonStylizedContained textBefore={<ArrowBackIcon/> } text={"Retour"} onClickFunction={()=> {history.push('/')}}/>
+                <ButtonStylizedContained textbefore={<ArrowBackIcon/> } text={"Retour"} onClickFunction={()=> {history.push('/')}}/>
                 <Grid container direction="column" justify="center" alignItems="center" spacing={5}>
                     <Grid item>
                         <TextFieldStylizedOutlined className={classes.textField} label={"Age"} variant="outlined"/>

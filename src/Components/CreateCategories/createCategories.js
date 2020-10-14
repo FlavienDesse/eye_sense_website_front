@@ -19,7 +19,7 @@ export default function CreateCategories() {
 
             <Header/>
             <Container maxWidth="xl">
-                <ButtonStylizedContained textBefore={<ArrowBackIcon/> } text={"Retour"} onClickFunction={()=> {history.push('/')}}/>
+                <ButtonStylizedContained textbefore={<ArrowBackIcon/> } text={"Retour"} onClickFunction={()=> {history.push('/')}}/>
                 <Grid container justify="center" className={classes.gridContainer} spacing={3}>
                     <Grid item xs={12} >
                         <Typography variant="h5" component="h2" className={classes.title}>
@@ -41,7 +41,7 @@ export default function CreateCategories() {
                             type="file"
                         />
                         <label htmlFor="contained-button-file">
-                            <ButtonStylizedContained text={"Upload"} component="span"/>
+                            <ButtonStylizedContained text={"Ajouter une photo"} component="span"/>
                         </label>
                     </Grid>
 
