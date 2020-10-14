@@ -17,8 +17,9 @@ export const theme = responsiveFontSizes(
         size: {
             appBarHeight: '120',
         },
-        font:{
-            Poppins:'Poppins'
+        font: {
+            titleFontCategory: "2em \"Poppins\"",
+            Poppins: 'Poppins'
         }
     })
 )

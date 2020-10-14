@@ -4,16 +4,23 @@ import {Container} from "@material-ui/core";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 import {useStyle} from "./style";
+import TextFieldStylizedOutlined from "../StylizedComponent/TextFieldStylizedOutlined/textFieldStylizedOutlined";
+import ButtonStylizedContained from "../StylizedComponent/ButtonStylizedContained/buttonStylizedContained";
+import ArrowBackIcon from "@material-ui/icons/ArrowBack";
+import {useHistory} from "react-router-dom";
 
 
 export default function CreateCategories() {
     const classes = useStyle()
+    const history = useHistory()
+
     return (
         <div>
 
             <Header/>
-            <Container>
-                <Grid container>
+            <Container maxWidth="xl">
+                <ButtonStylizedContained textBefore={<ArrowBackIcon/> } text={"Retour"} onClickFunction={()=> {history.push('/')}}/>
+                <Grid container justify="center" className={classes.gridContainer} spacing={3}>
                     <Grid item xs={12} >
                         <Typography variant="h5" component="h2" className={classes.title}>
                             Créer une catégorie
@@ -23,14 +30,19 @@ export default function CreateCategories() {
                         
                     </Grid>
                     <Grid item xs={12} >
-                        <Typography variant="h5" component="h2" className={classes.title}>
-                            Créer une catégorie
-                        </Typography>
+                        <TextFieldStylizedOutlined label={"Créer une catégorie"}/>
                     </Grid>
                     <Grid item xs={12} >
-                        <Typography variant="h5" component="h2" className={classes.title}>
-                            Créer une catégorie
-                        </Typography>
+                        <input
+                            accept="image/*"
+                            className={classes.input}
+                            id="contained-button-file"
+                            multiple
+                            type="file"
+                        />
+                        <label htmlFor="contained-button-file">
+                            <ButtonStylizedContained text={"Upload"} component="span"/>
+                        </label>
                     </Grid>
 
                 </Grid>
