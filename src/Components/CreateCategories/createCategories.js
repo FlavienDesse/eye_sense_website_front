@@ -30,7 +30,7 @@ export default function CreateCategories() {
                         
                     </Grid>
                     <Grid item xs={12} >
-                        <TextFieldStylizedOutlined label={"Créer une catégorie"}/>
+                        <TextFieldStylizedOutlined label={"Nom de la catégorie"}/>
                     </Grid>
                     <Grid item xs={12} >
                         <input
