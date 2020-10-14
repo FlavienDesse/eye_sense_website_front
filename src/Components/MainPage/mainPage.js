@@ -4,9 +4,11 @@ import Grid from "@material-ui/core/Grid";
 import Header from "../Header/header";
 import {Container} from "@material-ui/core";
 import {useStyle} from "./style";
+import { useHistory } from "react-router-dom";
 
 export default function MainPage() {
     const classes=useStyle();
+    let history = useHistory();
     return (
         <div>
             <Header></Header>
@@ -16,15 +18,15 @@ export default function MainPage() {
                     <Grid item xs={12}>
                         <ButtonStylizedContained text="COMMENCER UN TEST"
                                                  onClickFunction={() => {
-                                                     console.log("clicked")
+                                                    history.push("/StartTest")
                                                  }
                                                  }>
                         </ButtonStylizedContained>
                     </Grid>
                     <Grid item xs={12}>
-                        <ButtonStylizedContained text="AJOUTER UNE CATÉGORIE"
+                        <ButtonStylizedContained text="CRÉER UNE CATÉGORIE"
                                                  onClickFunction={() => {
-                                                     console.log("clicked")
+                                                     history.push("/CreateCategory")
                                                  }
                                                  }>
                         </ButtonStylizedContained>
@@ -32,7 +34,7 @@ export default function MainPage() {
                     <Grid item xs={12}>
                         <ButtonStylizedContained text="AJOUTER UNE PHOTO"
                                                  onClickFunction={() => {
-                                                     console.log("clicked")
+                                                     history.push("/AddPhotoToCategory")
                                                  }
                                                  }>
                         </ButtonStylizedContained>
