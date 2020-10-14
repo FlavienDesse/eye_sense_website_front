@@ -87,7 +87,7 @@ export default function MenuForm() {
                             )}
                             className={classes.autoComplete}
                             renderInput={(params) => (
-                                <TextFieldStylizedOutlined {...params} variant="outlined" label="Checkboxes" placeholder="Favorites" />
+                                <TextFieldStylizedOutlined {...params} variant="outlined" label="Sélectionner une / des catégorie(s)" placeholder="Favorites" />
                             )}
                         />
                     </Grid>
