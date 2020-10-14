@@ -1,7 +1,7 @@
 import React from "react";
 import {useStyle} from "./style";
 import Grid from "@material-ui/core/Grid";
-import {Container,TextField} from "@material-ui/core";
+import {Container} from "@material-ui/core";
 import Header from "../Header/header";
 import TextFieldStylizedOutlined from "../StylizedComponent/TextFieldStylizedOutlined/textFieldStylizedOutlined";
 import ButtonStylizedContained from "../StylizedComponent/ButtonStylizedContained/buttonStylizedContained";
@@ -9,11 +9,13 @@ import Autocomplete from '@material-ui/lab/Autocomplete';
 import CheckBoxOutlineBlankIcon from '@material-ui/icons/CheckBoxOutlineBlank';
 import CheckBoxIcon from '@material-ui/icons/CheckBox';
 import Checkbox from '@material-ui/core/Checkbox';
+import ArrowBackIcon from '@material-ui/icons/ArrowBack';
+import {useHistory} from 'react-router-dom';
 
 export default function MenuForm() {
 
     const classes = useStyle();
-
+    const history = useHistory()
 
     const top100Films = [
         { title: 'The Shawshank Redemption', year: 1994 },
@@ -49,12 +51,12 @@ export default function MenuForm() {
         { title: 'American History X', year: 1998 },
         { title: 'Interstellar', year: 2014 },
     ];
-
     return (
         <div>
             <Header/>
 
             <Container className={classes.global} maxWidth="xl">
+                <ButtonStylizedContained textBefore={<ArrowBackIcon/> } text={"Retour"} onClickFunction={()=> {history.push('/')}}/>
                 <Grid container direction="column" justify="center" alignItems="center" spacing={5}>
                     <Grid item>
                         <TextFieldStylizedOutlined className={classes.textField} label={"Age"} variant="outlined"/>
@@ -90,7 +92,7 @@ export default function MenuForm() {
                         />
                     </Grid>
                     <Grid item>
-                        <ButtonStylizedContained text="COMMENCER LE TEST" disableElevation/>
+                        <ButtonStylizedContained text="COMMENCER LE TEST"/>
                     </Grid>
                 </Grid>
             </Container>
