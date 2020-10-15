@@ -22,23 +22,20 @@ export default function CardObject(props){
 
                 <Grid item xs={12} md={6} className={classes.containerRight}>
                     <div>
-                        <Typography className={classes.titre}>PRODUIT : </Typography><br></br>
-                        <Typography className={classes.description}>Sweat gris moche avec la tête de 2 Coréen dessus</Typography><br></br><br></br>
-                        <Typography className={classes.titre}>TAILLE : </Typography>
-                        <br></br>
-                    
+                        <Typography className={classes.titre} variant="h1"component='h1'>PRODUIT : </Typography>
+                        <Typography className={classes.description} variant="h1">Sweat gris </Typography>
+                        <Typography className={classes.titre} variant="h1" component='h1'>TAILLE : </Typography>
+                        
+                        <Grid className={classes.Buttons} container item direction="row" justify="flex-start" alignItems="center">
+                            <Button variant="outlined" xs={12} sm={2} className={classes.Button}>XS</Button>
+                            <Button variant="outlined" xs={12} sm={2} className={classes.Button}>S</Button>
+                            <Button variant="outlined" xs={12} sm={2} className={classes.Button}>M</Button>
+                            <Button variant="outlined" xs={12} sm={2} className={classes.Button}>L</Button>
+                            <Button variant="outlined" xs={12} sm={2} className={classes.Button}>XL</Button>
+                        </Grid>
 
-
-                        <div className={classes.buttons}>
-                            <Button variant="outlined" className={classes.Button}>XS</Button>
-                            <Button variant="outlined" className={classes.Button}>S</Button>
-                            <Button variant="outlined" className={classes.Button}>M</Button>
-                            <Button variant="outlined" className={classes.Button}>L</Button>
-                            <Button variant="outlined" className={classes.Button}>XL</Button>
-                        </div>   
-                        <br></br><br></br>
-                        <Typography className={classes.titre}><text style={{fontWeight: 'bold'}}>PRIX :</text> </Typography><br></br>
-                        <Typography className={classes.prix}>49.99€</Typography>
+                        <Typography className={classes.titre} variant='h6' component='h5'>PRIX : </Typography>
+                        <Typography className={classes.prix} variant="h1" component='h1'>49.99€</Typography>
                     </div>
                 </Grid>
             </Grid>

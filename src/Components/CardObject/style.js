@@ -24,6 +24,12 @@ export const useStyle = makeStyles((theme) => ({
       backgroundColor:'#006876',
       fontSize:'15px',
       height:'17px',
+      marginBottom:'50px',
+      marginRight:'1px',
+      marginLeft:'1px',
+      
+    
+      
 
     },
 
@@ -32,11 +38,13 @@ export const useStyle = makeStyles((theme) => ({
     titre:{
       fontSize:"18px",
       fontWeight:'bold',
+      marginBottom:'20px',
     },
 
     description:{
       color:'black',
-      fontSize:'7px'
+      fontSize:'7px',
+      marginBottom:'50px',
     },
 
     prix:{
