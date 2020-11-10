@@ -39,6 +39,14 @@ export default function MainPage() {
                                                  }>
                         </ButtonStylizedContained>
                     </Grid>
+                    <Grid item xs={12}>
+                        <ButtonStylizedContained text="SUPPRIMER UNE CATEGORIE"
+                                                 onClickFunction={() => {
+                                                     history.push("/DeleteCategory")
+                                                 }
+                                                 }>
+                        </ButtonStylizedContained>
+                    </Grid>
                 </Grid>
             </Container>
 
