@@ -149,6 +149,7 @@ export default function DeleteCategories() {
                 })
                 .catch(function (error) {
                     setLoad(false)
+                    getCategories()
                     error.json().then((res) => {
                         if (res.message) {
                             enqueueSnackbar(res.message.message, {
