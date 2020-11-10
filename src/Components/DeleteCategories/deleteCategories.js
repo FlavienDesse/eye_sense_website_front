@@ -17,7 +17,7 @@ import Checkbox from '@material-ui/core/Checkbox';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import { BsTrash } from "react-icons/bs";
 import { BsTrashFill } from "react-icons/bs";
-import Popup from "./Popup/popup"; 
+import ModalConfirmDeleteCategories from "./ModalConfirmDeleteCategories/modalConfirmDeleteCategories";
 
 export default function DeleteCategories() {
 
@@ -27,9 +27,11 @@ export default function DeleteCategories() {
     const { enqueueSnackbar, closeSnackbar } = useSnackbar()
 
     const [categories, setCategories] = React.useState({})
-    const [load, setLoad] = React.useState(0)
+    const [load, setLoad] = React.useState(true)
     const [state, setState] = React.useState({})
     const [popupState, setPopupState] = React.useState({ seen: false })
+
+    const [openModalDeleteCategories, setOpenModalDeleteCategories] = React.useState(false)
 
     React.useEffect(() => {
         getCategories()
@@ -57,7 +59,7 @@ export default function DeleteCategories() {
     } */
 
     function getCategories() {
-
+        setLoad(true)
         fetch(process.env.REACT_APP_API_URL + "api/categories/getAllCategories", {
             method: "GET",
             headers: {
@@ -73,9 +75,10 @@ export default function DeleteCategories() {
             })
             .then((response) => {
                 setCategories(response)
-                setLoad(1)
+                setLoad(false)
             })
             .catch(function (error) {
+                setLoad(false)
                 error.json().then((res) => {
                     if (res.message) {
                         enqueueSnackbar(res.message.message, {
@@ -104,6 +107,7 @@ export default function DeleteCategories() {
     }
 
     function postCategories(categories) {
+        setLoad(true)
         if (categories === []) {
             enqueueSnackbar("Veuillez choisir des objets à supprimer", {
                 autoHideDuration: 3000,
@@ -132,6 +136,8 @@ export default function DeleteCategories() {
                     }
                 })
                 .then((response) => {
+                    getCategories()  
+                    setLoad(false)
                     enqueueSnackbar(response.message.message, {
                         autoHideDuration: 3000,
                         variant: "success",
@@ -142,6 +148,7 @@ export default function DeleteCategories() {
                     });
                 })
                 .catch(function (error) {
+                    setLoad(false)
                     error.json().then((res) => {
                         if (res.message) {
                             enqueueSnackbar(res.message.message, {
@@ -165,9 +172,16 @@ export default function DeleteCategories() {
     return (
         <div>
             {
-                !load ? <Spinner loading={true} color={theme.palette.primary.main}></Spinner> :
+                load ? <Spinner loading={true} color={theme.palette.primary.main}></Spinner> :
                     <div>
+                        <ModalConfirmDeleteCategories 
+                            openModalDeleteCategories= {openModalDeleteCategories} 
+                            setOpenModalDeleteCategories= {setOpenModalDeleteCategories}
+                            getCategoriesToDelete= {getCategoriesToDelete}
+                            postCategories= {postCategories}
+                        />
                         <Header />
+
                         <Container maxWidth="xl">
                             <ButtonStylizedContained textbefore={<ArrowBackIcon />}
                                 text={"Retour"} onClickFunction={() => {
@@ -195,7 +209,7 @@ export default function DeleteCategories() {
                                         </AccordionSummary>
                                         <AccordionDetails>
                                             {
-                                                console.log(key.allPhotos),
+                                                // console.log(key.allPhotos),
                                                 key.allPhotos.map((key, index) => (
                                                     <img 
                                                     key={index} 
@@ -213,10 +227,10 @@ export default function DeleteCategories() {
                                 <Grid item xs={12}>
                                     <ButtonStylizedContained
                                         text={"Supprimer"} onClickFunction={() => {
-                                            let categoriesToDelete = getCategoriesToDelete()
-                                            postCategories(categoriesToDelete)
+                                           
+                                            setOpenModalDeleteCategories(true)
                                             //uncheckAll(categories)
-                                            getCategories()                                           
+                                                                                    
                                             // console.log(popupState)
                                         }
                                         } />
