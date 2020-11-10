@@ -29,7 +29,6 @@ export default function DeleteCategories() {
     const [categories, setCategories] = React.useState({})
     const [load, setLoad] = React.useState(true)
     const [state, setState] = React.useState({})
-    const [popupState, setPopupState] = React.useState({ seen: false })
 
     const [openModalDeleteCategories, setOpenModalDeleteCategories] = React.useState(false)
 
@@ -42,12 +41,6 @@ export default function DeleteCategories() {
         setState({ ...state, [event.target.name]: event.target.checked });
 
     };
-
-    /* function togglePop() {
-        setPopupState({
-         seen: !popupState.seen
-        })
-    } */
 
     /* function uncheckAll(categories) {
         categories.forEach(category => {
@@ -138,6 +131,7 @@ export default function DeleteCategories() {
                 .then((response) => {
                     getCategories()  
                     setLoad(false)
+                    setState([])
                     enqueueSnackbar(response.message.message, {
                         autoHideDuration: 3000,
                         variant: "success",
@@ -149,6 +143,7 @@ export default function DeleteCategories() {
                 })
                 .catch(function (error) {
                     setLoad(false)
+                    setState([])
                     error.json().then((res) => {
                         if (res.message) {
                             enqueueSnackbar(res.message.message, {
@@ -208,16 +203,21 @@ export default function DeleteCategories() {
 
                                         </AccordionSummary>
                                         <AccordionDetails>
-                                            {
-                                                // console.log(key.allPhotos),
-                                                key.allPhotos.map((key, index) => (
-                                                    <img 
-                                                    key={index} 
-                                                    className={classes.img}
-                                                    src={process.env.REACT_APP_API_URL + 'api/photos/getPhotos?id=' + key} 
-                                                    />
-                                                ))
-                                            }
+                                            <Grid>
+                                                {
+                                                    // console.log(key.allPhotos),
+                                                    key.allPhotos.map((key, index) => (
+                                                        <Grid item xs={12}>
+                                                            <img 
+                                                            key={index} 
+                                                            className={classes.img}
+                                                            src={process.env.REACT_APP_API_URL + 'api/photos/getPhotos?id=' + key} 
+                                                            />
+                                                        </Grid>
+                                                    ))
+                                                }
+                                            </Grid>
+                                            
 
                                         </AccordionDetails>
                                     </Accordion>
