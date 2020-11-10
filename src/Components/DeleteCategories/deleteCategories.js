@@ -17,6 +17,7 @@ import Checkbox from '@material-ui/core/Checkbox';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import { BsTrash } from "react-icons/bs";
 import { BsTrashFill } from "react-icons/bs";
+import Popup from "./Popup/popup"; 
 
 export default function DeleteCategories() {
 
@@ -28,6 +29,7 @@ export default function DeleteCategories() {
     const [categories, setCategories] = React.useState({})
     const [load, setLoad] = React.useState(0)
     const [state, setState] = React.useState({})
+    const [popupState, setPopupState] = React.useState({ seen: false })
 
     React.useEffect(() => {
         getCategories()
@@ -38,6 +40,21 @@ export default function DeleteCategories() {
         setState({ ...state, [event.target.name]: event.target.checked });
 
     };
+
+    /* function togglePop() {
+        setPopupState({
+         seen: !popupState.seen
+        })
+    } */
+
+    /* function uncheckAll(categories) {
+        categories.forEach(category => {
+            let checkboxes = document.getElementsByName(category._id + '_checkbox')
+            console.log(checkboxes[0].checked)
+            checkboxes[0].checked = false
+            console.log(checkboxes[0].checked)
+        })
+    } */
 
     function getCategories() {
 
@@ -83,6 +100,7 @@ export default function DeleteCategories() {
                 categoriesToDelete.push(key.split('_')[0])
             }
         })
+        return categoriesToDelete
     }
 
     function postCategories(categories) {
@@ -102,11 +120,12 @@ export default function DeleteCategories() {
                     "Content-type": "application/json",
                 },
                 body: JSON.stringify({
-                    idCategories: categories,
+                    arrayId: categories,
                 })
             })
                 .then((response) => {
                     if (response.ok) {
+
                         return response.json();
                     } else {
                         return Promise.reject(response);
@@ -176,8 +195,13 @@ export default function DeleteCategories() {
                                         </AccordionSummary>
                                         <AccordionDetails>
                                             {
+                                                console.log(key.allPhotos),
                                                 key.allPhotos.map((key, index) => (
-                                                    <img key={index} className={classes.img} src={key} />
+                                                    <img 
+                                                    key={index} 
+                                                    className={classes.img}
+                                                    src={process.env.REACT_APP_API_URL + 'api/photos/getPhotos?id=' + key} 
+                                                    />
                                                 ))
                                             }
 
@@ -189,9 +213,14 @@ export default function DeleteCategories() {
                                 <Grid item xs={12}>
                                     <ButtonStylizedContained
                                         text={"Supprimer"} onClickFunction={() => {
-                                            getCategoriesToDelete()
+                                            let categoriesToDelete = getCategoriesToDelete()
+                                            postCategories(categoriesToDelete)
+                                            //uncheckAll(categories)
+                                            getCategories()                                           
+                                            // console.log(popupState)
                                         }
                                         } />
+                                        
                                 </Grid>
                             </Grid>
 
