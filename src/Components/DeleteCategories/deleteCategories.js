@@ -18,6 +18,7 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import { BsTrash } from "react-icons/bs";
 import { BsTrashFill } from "react-icons/bs";
 import ModalConfirmDeleteCategories from "./ModalConfirmDeleteCategories/modalConfirmDeleteCategories";
+import ModalConfirmDeletePhoto from "./ModalConfirmDeletePhoto/modalConfirmDeletePhoto";
 
 export default function DeleteCategories() {
 
@@ -27,29 +28,20 @@ export default function DeleteCategories() {
     const { enqueueSnackbar, closeSnackbar } = useSnackbar()
 
     const [categories, setCategories] = React.useState({})
+    const [photo, setPhoto] = React.useState({})
     const [load, setLoad] = React.useState(true)
     const [state, setState] = React.useState({})
 
     const [openModalDeleteCategories, setOpenModalDeleteCategories] = React.useState(false)
+    const [openModalDeletePhoto, setOpenModalDeletePhoto] = React.useState(false)
 
     React.useEffect(() => {
         getCategories()
-
     }, []);
 
     const handleChange = (event) => {
         setState({ ...state, [event.target.name]: event.target.checked });
-
     };
-
-    /* function uncheckAll(categories) {
-        categories.forEach(category => {
-            let checkboxes = document.getElementsByName(category._id + '_checkbox')
-            console.log(checkboxes[0].checked)
-            checkboxes[0].checked = false
-            console.log(checkboxes[0].checked)
-        })
-    } */
 
     function getCategories() {
         setLoad(true)
@@ -129,7 +121,7 @@ export default function DeleteCategories() {
                     }
                 })
                 .then((response) => {
-                    getCategories()  
+                    getCategories()
                     setLoad(false)
                     setState([])
                     enqueueSnackbar(response.message.message, {
@@ -162,6 +154,58 @@ export default function DeleteCategories() {
         }
     }
 
+    function postPhoto(ids) {
+        setLoad(true)
+        fetch(process.env.REACT_APP_API_URL + "api/categories/deletePhotos", {
+            method: "POST",
+            headers: {
+                "Content-type": "application/json",
+            },
+            body: JSON.stringify({
+                idImage: ids.idImage,
+                idCategory: ids.idCategory,
+            })
+        })
+            .then((response) => {
+                if (response.ok) {
+
+                    return response.json();
+                } else {
+                    return Promise.reject(response);
+                }
+            })
+            .then((response) => {
+                getCategories()
+                setLoad(false)
+                setPhoto({})
+                enqueueSnackbar(response.message.message, {
+                    autoHideDuration: 3000,
+                    variant: "success",
+                    anchorOrigin: {
+                        vertical: 'bottom',
+                        horizontal: 'center',
+                    }
+                });
+            })
+            .catch(function (error) {
+                setLoad(false)
+                setPhoto({})
+                error.json().then((res) => {
+                    if (res.message) {
+                        enqueueSnackbar(res.message.message, {
+                            autoHideDuration: 3000,
+                            variant: "error",
+                            anchorOrigin: {
+                                vertical: 'bottom',
+                                horizontal: 'center',
+                            }
+                        });
+                    }
+
+                })
+
+            });
+    }
 
 
     return (
@@ -169,11 +213,17 @@ export default function DeleteCategories() {
             {
                 load ? <Spinner loading={true} color={theme.palette.primary.main}></Spinner> :
                     <div>
-                        <ModalConfirmDeleteCategories 
-                            openModalDeleteCategories= {openModalDeleteCategories} 
-                            setOpenModalDeleteCategories= {setOpenModalDeleteCategories}
-                            getCategoriesToDelete= {getCategoriesToDelete}
-                            postCategories= {postCategories}
+                        <ModalConfirmDeleteCategories
+                            openModalDeleteCategories={openModalDeleteCategories}
+                            setOpenModalDeleteCategories={setOpenModalDeleteCategories}
+                            getCategoriesToDelete={getCategoriesToDelete}
+                            postCategories={postCategories}
+                        />
+                        <ModalConfirmDeletePhoto
+                            openModalDeletePhoto={openModalDeletePhoto}
+                            setOpenModalDeletePhoto={setOpenModalDeletePhoto}
+                            photo={photo}
+                            postPhoto={postPhoto}
                         />
                         <Header />
 
@@ -206,18 +256,23 @@ export default function DeleteCategories() {
                                             <Grid>
                                                 {
                                                     // console.log(key.allPhotos),
-                                                    key.allPhotos.map((key, index) => (
+                                                    key.allPhotos.map((key2, index) => (
                                                         <Grid item xs={12}>
-                                                            <img 
-                                                            key={index} 
-                                                            className={classes.img}
-                                                            src={process.env.REACT_APP_API_URL + 'api/photos/getPhotos?id=' + key} 
+                                                            <img
+                                                                key={index}
+                                                                className={classes.img}
+                                                                src={process.env.REACT_APP_API_URL + 'api/photos/getPhotos?id=' + key2}
+                                                                onClick={() => {
+                                                                    setPhoto({idImage: key2,
+                                                                              idCategory: key._id})
+                                                                    setOpenModalDeletePhoto(true)
+                                                                }}
                                                             />
                                                         </Grid>
                                                     ))
                                                 }
                                             </Grid>
-                                            
+
 
                                         </AccordionDetails>
                                     </Accordion>
@@ -227,18 +282,10 @@ export default function DeleteCategories() {
                                 <Grid item xs={12}>
                                     <ButtonStylizedContained
                                         text={"Supprimer"} onClickFunction={() => {
-                                           
                                             setOpenModalDeleteCategories(true)
-                                            //uncheckAll(categories)
-                                                                                    
-                                            // console.log(popupState)
-                                        }
-                                        } />
-                                        
+                                        }} />
                                 </Grid>
                             </Grid>
-
-
                         </Container>
                     </div>
             }
