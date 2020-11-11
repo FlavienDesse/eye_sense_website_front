@@ -23,23 +23,26 @@ export default function CreateCategories() {
     const {enqueueSnackbar, closeSnackbar} = useSnackbar();
 
     function loadImage(e) {
-        if (e.target.files && e.target.files[0]) {
-            var reader = new FileReader();
-            let name = e.target.files[0].name;
-            reader.readAsDataURL(e.target.files[0])
+        for (let i = 0 ; i < e.target.files.length ; i++){
+            if (e.target.files && e.target.files[i]) {
+                var reader = new FileReader();
+                let name = e.target.files[i].name;
+                reader.readAsDataURL(e.target.files[i])
 
-            reader.onload = (res) => {
-                setAllImg((temp) => {
-                    let temp2 = [...temp]
-                    temp2.push({
-                        src: res.target.result,
-                        extension:name.split('.').pop(),
-                        name: name
+                reader.onload = (res) => {
+                    setAllImg((temp) => {
+                        let temp2 = [...temp]
+                        temp2.push({
+                            src: res.target.result,
+                            extension:name.split('.').pop(),
+                            name: name
+                        })
+                        return temp2
                     })
-                    return temp2
-                })
+                }
             }
         }
+
     }
 
     function sendImage(e) {
