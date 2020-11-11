@@ -8,6 +8,7 @@ export default function TextFieldStylizedOutlined(props){
     return(
         <TextField
             {...props}
+
             variant={"outlined"}
             className={clsx(classes.textField,props.className)}
         />

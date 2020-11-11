@@ -1,26 +1,30 @@
 import React from "react";
 import {useStyle} from "./style";
 import {Input, Typography} from "@material-ui/core";
-import Select from "@material-ui/core/Select";
-import MenuItem from "@material-ui/core/Select";
-import Button from "@material-ui/core/Button"
 import Grid from "@material-ui/core/Grid";
 import ButtonStylizedContained from "../StylizedComponent/ButtonStylizedContained/buttonStylizedContained";
 import Container from "@material-ui/core/Container";
 import Header from "../Header/header"
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import {useHistory} from "react-router-dom";
-import { useSnackbar } from "notistack";
+import {useSnackbar} from "notistack";
 import Spinner from "../Spinner/spinner";
-import { useTheme } from "@material-ui/core/styles";
+import {useTheme} from "@material-ui/core/styles";
+import TextField from '@material-ui/core/TextField';
+import Autocomplete from '@material-ui/lab/Autocomplete';
+import Accordion from "@material-ui/core/Accordion";
+import AccordionSummary from "@material-ui/core/AccordionSummary";
+import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
+import AccordionDetails from "@material-ui/core/AccordionDetails";
 
-export default function Addphoto(){
+export default function Addphoto() {
     const classes = useStyle();
     const history = useHistory()
-    const [allImg,setAllImg]= React.useState([])
+    const [allImg, setAllImg] = React.useState([])
     const [load, setLoad] = React.useState(true)
     const [categories, setCategories] = React.useState({})
-    const { enqueueSnackbar, closeSnackbar } = useSnackbar()
+
+    const {enqueueSnackbar, closeSnackbar} = useSnackbar()
     const theme = useTheme()
 
 
@@ -35,7 +39,7 @@ export default function Addphoto(){
                     let temp2 = [...temp]
                     temp2.push({
                         src: res.target.result,
-                        extension:name.split('.').pop(),
+                        extension: name.split('.').pop(),
                         name: name
                     })
                     return temp2
@@ -44,7 +48,7 @@ export default function Addphoto(){
         }
     }
 
-    
+
     function getCategories() {
         setLoad(true)
         fetch(process.env.REACT_APP_API_URL + "api/categories/getAllCategories", {
@@ -64,7 +68,8 @@ export default function Addphoto(){
                 setCategories(response)
                 setLoad(false)
             })
-            .catch(function (error) {console.log(error)
+            .catch(function (error) {
+                console.log(error)
                 setLoad(false)
                 error.json().then((res) => {
                     if (res.message) {
@@ -83,42 +88,48 @@ export default function Addphoto(){
             });
     }
 
-        React.useEffect(()=>{
-            getCategories()
-        },[])
-   
+    React.useEffect(() => {
+        getCategories()
+    }, [])
 
-    return(
-    
-    <div>
-        {
-        load ? <Spinner loading={true} color={theme.palette.primary.main}></Spinner> :
+
+
+    return (
+
         <div>
-            <Header/>
-            
-            <Container maxWidth="xl">
-                <ButtonStylizedContained textbefore={<ArrowBackIcon/>}
-                text={"Retour"} onClickFunction={() => {
-                history.push('/')
-                }}/>
+            {
+                load ? <Spinner loading={true} color={theme.palette.primary.main}/> :
+                    <div>
+                        <Header/>
 
 
-                <Grid container justify="center" className={classes.gridContainer} spacing={3}>
-                    <Grid item xs={12}>
-                        <Typography className={classes.title}>
-                            Ajouter une photo
-                        </Typography>
-                    </Grid>
 
 
-                    <Grid item xs={12}>
-                        <Select labelId="label" id="select" >
-                            <MenuItem value="premierecategorieID....................">nom categorie1 </MenuItem>
-                            <MenuItem value="2mecategorieID................">nom categorie2 </MenuItem>
-                        </Select>
-                    </Grid>
+                        <Container maxWidth="xl">
+                            <ButtonStylizedContained textbefore={<ArrowBackIcon/>}
+                                                     text={"Retour"} onClickFunction={() => {
+                                history.push('/')
+                            }}/>
 
-                    <Grid item xs={12}>
+
+                            <Grid container justify="center" className={classes.gridContainer} spacing={3}>
+                                <Grid item xs={12}>
+                                    <Typography className={classes.title}>
+                                        Ajouter une photo
+                                    </Typography>
+                                </Grid>
+
+
+                                <Grid item xs={12} className={classes.autoComplete}>
+                                    <Autocomplete
+                                        options={categories}
+                                        getOptionLabel={(option) => option.name}
+                                        style={{ width: 300 }}
+                                        renderInput={(params) => <TextField {...params} label="Catégorie" variant="outlined" />}
+                                    />
+                                </Grid>
+
+                                <Grid item xs={12}>
                                     <input
                                         accept="image/*"
                                         className={classes.input}
@@ -131,23 +142,35 @@ export default function Addphoto(){
                                         <ButtonStylizedContained text={"Ajouter une photo"} component="span"/>
                                     </label>
                                 </Grid>
+                                <Grid item xs={12} className={classes.containerAccordion}>
+                                    {
+                                        allImg.map((key, index) => (
+                                            <Accordion key={index} className={classes.accordion}>
+                                                <AccordionSummary expandIcon={<ExpandMoreIcon/>}>
+                                                    <Typography ariant="h5" component="h2">{key.name}</Typography>
+                                                </AccordionSummary>
+                                                <AccordionDetails>
+                                                    <img className={classes.img} src={key.src}/>
+                                                </AccordionDetails>
+                                            </Accordion>
 
 
-                    <Grid item xs={12}>
-                        <ButtonStylizedContained type={"submit"} text="ENVOYER" onclick={()=>{/*ajouter l'image à la base de donnée*/}}/>
-                    </Grid>
-            
-            
-                </Grid>
-            </Container>
-            </div>
-        }
-    </div>
+                                        ))
+                                    }
+                                </Grid>
 
-    
-        
-    
-    
-    
+                                <Grid item xs={12}>
+                                    <ButtonStylizedContained type={"submit"} text="ENVOYER" onclick={() => {/*ajouter l'image à la base de donnée*/
+                                    }}/>
+                                </Grid>
+
+
+                            </Grid>
+                        </Container>
+                    </div>
+            }
+        </div>
+
+
     )
 }
