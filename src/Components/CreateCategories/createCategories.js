@@ -13,6 +13,8 @@ import AccordionSummary from '@material-ui/core/AccordionSummary';
 import AccordionDetails from '@material-ui/core/AccordionDetails';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import {useSnackbar} from "notistack";
+import DeleteIcon from '@material-ui/icons/Delete';
+
 
 export default function CreateCategories() {
     const classes = useStyle()
@@ -107,6 +109,16 @@ export default function CreateCategories() {
         }
     }
 
+    const deleteThisPhotos = (e,index)=>{
+        e.stopPropagation()
+        console.log(index)
+        setAllImg(prevState => {
+            let temp = [...prevState]
+            temp.splice(index,1)
+            return [...temp]
+        })
+    }
+
     return (
         <div>
 
@@ -150,12 +162,14 @@ export default function CreateCategories() {
                             {
                                 allImg.map((key, index) => (
                                     <Accordion key={index} className={classes.accordion}>
-                                        <AccordionSummary expandIcon={<ExpandMoreIcon/>}>
-                                            <Typography ariant="h5" component="h2">{key.name}</Typography>
+                                        <AccordionSummary  expandIcon={<ExpandMoreIcon/>}>
+                                            <Typography ariant="h5" component="h2" className={classes.titleImg}>{key.name}</Typography>
+                                            <DeleteIcon className={classes.deleteIcon} onClick={(e)=>deleteThisPhotos(e,index)}/>
                                         </AccordionSummary>
                                         <AccordionDetails>
                                             <img className={classes.img} src={key.src}/>
                                         </AccordionDetails>
+
                                     </Accordion>
 
 

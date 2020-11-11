@@ -19,7 +19,14 @@ export const useStyle = makeStyles((theme) => ({
         margin: 'auto !important',
         width: '450px',
     },
-    containerAccordion:{
-      marginTop:'25px',
+    titleImg: {
+        textAlign: 'left',
+        flex: '1'
+    },
+    containerAccordion: {
+        marginTop: '25px',
+    },
+    deleteIcon:{
+      color:'red',
     },
 }));
