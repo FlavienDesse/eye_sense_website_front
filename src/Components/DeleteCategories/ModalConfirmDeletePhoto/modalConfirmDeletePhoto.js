@@ -6,32 +6,31 @@ import Typography from "@material-ui/core/Typography";
 import ButtonStylizedContained from "../../StylizedComponent/ButtonStylizedContained/buttonStylizedContained";
 
 
-export default function ModalConfirmDeleteCategories(props) {
+export default function ModalConfirmDeletePhoto(props) {
 
     const classes = useStyle()
 
     return (
-        <Modal open={props.openModalDeleteCategories}>
+        <Modal open={props.openModalDeletePhoto}>
             <div  className={classes.root}>
                 <Grid container justify={"center"}>
 
                     <Grid item xs={12}>
                         <Typography component="h1" variant="h6" color="inherit" className={classes.title}>
-                            Voulez-vous vraiment supprimer ces catégories ?
+                            Voulez-vous vraiment supprimer cette photo ?
                         </Typography>
                     </Grid>
 
                     <Grid item xs={6}>
                         <ButtonStylizedContained text={"Valider"} onClickFunction={() => {
-                            let categoriesToDelete = props.getCategoriesToDelete()
-                            props.postCategories(categoriesToDelete)
-                            props.setOpenModalDeleteCategories(false)
+                            props.postPhoto(props.photo)
+                            props.setOpenModalDeletePhoto(false)
                         }} />
 
                     </Grid>
                     <Grid item xs={6}>
                         <ButtonStylizedContained text={"Retour"} onClickFunction={() => {
-                            props.setOpenModalDeleteCategories(false)
+                            props.setOpenModalDeletePhoto(false)
                         }} />
                     </Grid>
                 </Grid>
