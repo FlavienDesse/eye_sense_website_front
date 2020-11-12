@@ -25,14 +25,14 @@ export default function Addphoto() {
     const [allImg, setAllImg] = React.useState([])
     const [load, setLoad] = React.useState(true)
     const [categories, setCategories] = React.useState({})
-    const [actualCategorie, setActualCategorie] = React.useState("")
+    const [actualCategorie, setActualCategorie] = React.useState(null)
 
     const {enqueueSnackbar, closeSnackbar} = useSnackbar()
     const theme = useTheme()
 
 
     function loadImage(e) {
-        for (let i = 0 ; i < e.target.files.length ; i++){
+        for (let i = 0; i < e.target.files.length; i++) {
             if (e.target.files && e.target.files[i]) {
                 var reader = new FileReader();
                 let name = e.target.files[i].name;
@@ -43,7 +43,7 @@ export default function Addphoto() {
                         let temp2 = [...temp]
                         temp2.push({
                             src: res.target.result,
-                            extension:name.split('.').pop(),
+                            extension: name.split('.').pop(),
                             name: name
                         })
                         return temp2
@@ -98,31 +98,27 @@ export default function Addphoto() {
         getCategories()
     }, [])
 
-    const sendPhotos = (e)=>{
-        if (actualCategorie=="" || allImg==""){
+    const sendPhotos = (e) => {
+        // eslint-disable-next-line eqeqeq
+        if (actualCategorie === null || allImg === null) {
             enqueueSnackbar("NONONON", {
                 autoHideDuration: 3000,
-                variant:"success",
-                variant:"error",
+                variant: "error",
                 anchorOrigin: {
                     vertical: 'bottom',
                     horizontal: 'center',
                 }
             });
-        }
-
-        else{
-
-        
-
+        } else {
+            console.log(actualCategorie)
             setLoad(true)
             fetch(process.env.REACT_APP_API_URL + "api/categories/addPhotos", {
                 method: "POST",
                 headers: {
                     "Content-type": "application/json",
                 },
-                body : JSON.stringify({
-                    categorie : actualCategorie,
+                body: JSON.stringify({
+                    categorie: actualCategorie,
                     allImg: allImg
                 })
             }).then((response) => {
@@ -132,42 +128,42 @@ export default function Addphoto() {
                     return Promise.reject(response);
                 }
             })
-            .then((response) => {
-                setLoad(false)
-                enqueueSnackbar(response.message.message, {
-                    autoHideDuration: 3000,
-                    variant:"success",
-                    anchorOrigin: {
-                        vertical: 'bottom',
-                        horizontal: 'center',
-                    }
-                });
-            })
-            .catch(function (error) {
-                setLoad(false)
-                error.json().then((res)=>{
-                    if(res.message){
-                        enqueueSnackbar(res.message.message, {
-                            autoHideDuration: 3000,
-                            variant:"error",
-                            anchorOrigin: {
-                                vertical: 'bottom',
-                                horizontal: 'center',
-                            }
-                        });
-                    }
-
+                .then((response) => {
+                    setLoad(false)
+                    enqueueSnackbar(response.message.message, {
+                        autoHideDuration: 3000,
+                        variant: "success",
+                        anchorOrigin: {
+                            vertical: 'bottom',
+                            horizontal: 'center',
+                        }
+                    });
                 })
+                .catch(function (error) {
+                    setLoad(false)
+                    error.json().then((res) => {
+                        if (res.message) {
+                            enqueueSnackbar(res.message.message, {
+                                autoHideDuration: 3000,
+                                variant: "error",
+                                anchorOrigin: {
+                                    vertical: 'bottom',
+                                    horizontal: 'center',
+                                }
+                            });
+                        }
 
-            });
+                    })
+
+                });
         }
     }
-    const deleteThisPhotos = (e,index)=>{
+    const deleteThisPhotos = (e, index) => {
         e.stopPropagation()
         console.log(index)
         setAllImg(prevState => {
             let temp = [...prevState]
-            temp.splice(index,1)
+            temp.splice(index, 1)
             return [...temp]
         })
     }
@@ -179,8 +175,6 @@ export default function Addphoto() {
                 load ? <Spinner loading={true} color={theme.palette.primary.main}/> :
                     <div>
                         <Header/>
-
-
 
 
                         <Container maxWidth="xl">
@@ -202,9 +196,11 @@ export default function Addphoto() {
                                     <Autocomplete
                                         options={categories}
                                         getOptionLabel={(option) => option.name}
-                                        style={{ width: 300 }}
-                                        onChange={(e,value)=> setActualCategorie(value)}
-                                        renderInput={(params) => <TextField {...params} label="Catégorie" variant="outlined" />}
+                                        style={{width: 300}}
+                                        value={actualCategorie}
+                                        onChange={(e, value) => setActualCategorie(value)}
+                                        renderInput={(params) => <TextField {...params} label="Catégorie"
+                                                                            variant="outlined"/>}
                                     />
                                 </Grid>
 
@@ -226,8 +222,10 @@ export default function Addphoto() {
                                         allImg.map((key, index) => (
                                             <Accordion key={index} className={classes.accordion}>
                                                 <AccordionSummary expandIcon={<ExpandMoreIcon/>}>
-                                                    <Typography ariant="h5" component="h2" className={classes.titleImg}>{key.name}</Typography>
-                                                    <DeleteIcon className={classes.deleteIcon} onClick={(e)=>deleteThisPhotos(e,index)}/>
+                                                    <Typography ariant="h5" component="h2"
+                                                                className={classes.titleImg}>{key.name}</Typography>
+                                                    <DeleteIcon className={classes.deleteIcon}
+                                                                onClick={(e) => deleteThisPhotos(e, index)}/>
                                                 </AccordionSummary>
                                                 <AccordionDetails>
                                                     <img className={classes.img} src={key.src}/>
@@ -241,7 +239,7 @@ export default function Addphoto() {
 
                                 <Grid item xs={12}>
                                     <ButtonStylizedContained type={"submit"} text="ENVOYER"
-                                     onClickFunction={()=>sendPhotos()}/>
+                                                             onClickFunction={() => sendPhotos()}/>
                                 </Grid>
 
 
