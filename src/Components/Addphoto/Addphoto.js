@@ -16,6 +16,8 @@ import Accordion from "@material-ui/core/Accordion";
 import AccordionSummary from "@material-ui/core/AccordionSummary";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import AccordionDetails from "@material-ui/core/AccordionDetails";
+import DeleteIcon from '@material-ui/icons/Delete';
+
 
 export default function Addphoto() {
     const classes = useStyle();
@@ -97,51 +99,77 @@ export default function Addphoto() {
     }, [])
 
     const sendPhotos = (e)=>{
-        setLoad(true)
-        fetch(process.env.REACT_APP_API_URL + "api/categories/addPhotos", {
-            method: "POST",
-            headers: {
-                "Content-type": "application/json",
-            },
-            body : JSON.stringify({
-                categorie : actualCategorie,
-                allImg: allImg
-            })
-        }).then((response) => {
-            if (response.ok) {
-                return response.json();
-            } else {
-                return Promise.reject(response);
-            }
-        })
-        .then((response) => {
-            setLoad(false)
-            enqueueSnackbar(response.message.message, {
+        if (actualCategorie=="" || allImg==""){
+            enqueueSnackbar("NONONON", {
                 autoHideDuration: 3000,
                 variant:"success",
+                variant:"error",
                 anchorOrigin: {
                     vertical: 'bottom',
                     horizontal: 'center',
                 }
             });
-        })
-        .catch(function (error) {
-            setLoad(false)
-            error.json().then((res)=>{
-                if(res.message){
-                    enqueueSnackbar(res.message.message, {
-                        autoHideDuration: 3000,
-                        variant:"error",
-                        anchorOrigin: {
-                            vertical: 'bottom',
-                            horizontal: 'center',
-                        }
-                    });
+        }
+
+        else{
+
+        
+
+            setLoad(true)
+            fetch(process.env.REACT_APP_API_URL + "api/categories/addPhotos", {
+                method: "POST",
+                headers: {
+                    "Content-type": "application/json",
+                },
+                body : JSON.stringify({
+                    categorie : actualCategorie,
+                    allImg: allImg
+                })
+            }).then((response) => {
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    return Promise.reject(response);
                 }
-
             })
+            .then((response) => {
+                setLoad(false)
+                enqueueSnackbar(response.message.message, {
+                    autoHideDuration: 3000,
+                    variant:"success",
+                    anchorOrigin: {
+                        vertical: 'bottom',
+                        horizontal: 'center',
+                    }
+                });
+            })
+            .catch(function (error) {
+                setLoad(false)
+                error.json().then((res)=>{
+                    if(res.message){
+                        enqueueSnackbar(res.message.message, {
+                            autoHideDuration: 3000,
+                            variant:"error",
+                            anchorOrigin: {
+                                vertical: 'bottom',
+                                horizontal: 'center',
+                            }
+                        });
+                    }
 
-        });
+                })
+
+            });
+        }
+    }
+    const deleteThisPhotos = (e,index)=>{
+        e.stopPropagation()
+        console.log(index)
+        setAllImg(prevState => {
+            let temp = [...prevState]
+            temp.splice(index,1)
+            return [...temp]
+        })
     }
 
     return (
@@ -198,7 +226,8 @@ export default function Addphoto() {
                                         allImg.map((key, index) => (
                                             <Accordion key={index} className={classes.accordion}>
                                                 <AccordionSummary expandIcon={<ExpandMoreIcon/>}>
-                                                    <Typography ariant="h5" component="h2">{key.name}</Typography>
+                                                    <Typography ariant="h5" component="h2" className={classes.titleImg}>{key.name}</Typography>
+                                                    <DeleteIcon className={classes.deleteIcon} onClick={(e)=>deleteThisPhotos(e,index)}/>
                                                 </AccordionSummary>
                                                 <AccordionDetails>
                                                     <img className={classes.img} src={key.src}/>

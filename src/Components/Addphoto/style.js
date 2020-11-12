@@ -23,4 +23,16 @@ export const useStyle = makeStyles((theme) => ({
         marginTop:'25px',
     },
 
+    titleImg: {
+        textAlign: 'left',
+        flex: '1'
+    },
+    img: {
+        margin: 'auto',
+        width:"100%",
+    },
+    deleteIcon:{
+        color:'red',
+      },
+
 }));
