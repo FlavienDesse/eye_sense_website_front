@@ -98,15 +98,13 @@ export default function Addphoto() {
 
     const sendPhotos = (e)=>{
         setLoad(true)
-    
-        console.log(process.env.REACT_APP_API_URL + "api/categories/getAllCategories")
         fetch(process.env.REACT_APP_API_URL + "api/categories/addPhotos", {
             method: "POST",
             headers: {
                 "Content-type": "application/json",
             },
             body : JSON.stringify({
-                categorie : categories,
+                categorie : actualCategorie,
                 allImg: allImg
             })
         }).then((response) => {
