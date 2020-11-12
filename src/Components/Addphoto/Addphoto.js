@@ -23,29 +23,33 @@ export default function Addphoto() {
     const [allImg, setAllImg] = React.useState([])
     const [load, setLoad] = React.useState(true)
     const [categories, setCategories] = React.useState({})
+    const [actualCategorie, setActualCategorie] = React.useState("")
 
     const {enqueueSnackbar, closeSnackbar} = useSnackbar()
     const theme = useTheme()
 
 
     function loadImage(e) {
-        if (e.target.files && e.target.files[0]) {
-            var reader = new FileReader();
-            let name = e.target.files[0].name;
-            reader.readAsDataURL(e.target.files[0])
+        for (let i = 0 ; i < e.target.files.length ; i++){
+            if (e.target.files && e.target.files[i]) {
+                var reader = new FileReader();
+                let name = e.target.files[i].name;
+                reader.readAsDataURL(e.target.files[i])
 
-            reader.onload = (res) => {
-                setAllImg((temp) => {
-                    let temp2 = [...temp]
-                    temp2.push({
-                        src: res.target.result,
-                        extension: name.split('.').pop(),
-                        name: name
+                reader.onload = (res) => {
+                    setAllImg((temp) => {
+                        let temp2 = [...temp]
+                        temp2.push({
+                            src: res.target.result,
+                            extension:name.split('.').pop(),
+                            name: name
+                        })
+                        return temp2
                     })
-                    return temp2
-                })
+                }
             }
         }
+
     }
 
 
@@ -92,7 +96,55 @@ export default function Addphoto() {
         getCategories()
     }, [])
 
+    const sendPhotos = (e)=>{
+        setLoad(true)
+    
+        console.log(process.env.REACT_APP_API_URL + "api/categories/getAllCategories")
+        fetch(process.env.REACT_APP_API_URL + "api/categories/addPhotos", {
+            method: "POST",
+            headers: {
+                "Content-type": "application/json",
+            },
+            body : JSON.stringify({
+                categorie : categories.name,
+                allImg: allImg
+            })
+        }).then((response) => {
+            if (response.ok) {
+                return response.json();
+            } else {
+                return Promise.reject(response);
+            }
+        })
+        .then((response) => {
+            setLoad(false)
+            enqueueSnackbar(response.message.message, {
+                autoHideDuration: 3000,
+                variant:"success",
+                anchorOrigin: {
+                    vertical: 'bottom',
+                    horizontal: 'center',
+                }
+            });
+        })
+        .catch(function (error) {
+            setLoad(false)
+            error.json().then((res)=>{
+                if(res.message){
+                    enqueueSnackbar(res.message.message, {
+                        autoHideDuration: 3000,
+                        variant:"error",
+                        anchorOrigin: {
+                            vertical: 'bottom',
+                            horizontal: 'center',
+                        }
+                    });
+                }
 
+            })
+
+        });
+    }
 
     return (
 
@@ -125,6 +177,7 @@ export default function Addphoto() {
                                         options={categories}
                                         getOptionLabel={(option) => option.name}
                                         style={{ width: 300 }}
+                                        onChange={(e,value)=> setActualCategorie(value)}
                                         renderInput={(params) => <TextField {...params} label="Catégorie" variant="outlined" />}
                                     />
                                 </Grid>
@@ -160,8 +213,8 @@ export default function Addphoto() {
                                 </Grid>
 
                                 <Grid item xs={12}>
-                                    <ButtonStylizedContained type={"submit"} text="ENVOYER" onclick={() => {/*ajouter l'image à la base de donnée*/
-                                    }}/>
+                                    <ButtonStylizedContained type={"submit"} text="ENVOYER"
+                                     onClickFunction={()=>sendPhotos()}/>
                                 </Grid>
 
 
