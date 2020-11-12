@@ -106,7 +106,7 @@ export default function Addphoto() {
                 "Content-type": "application/json",
             },
             body : JSON.stringify({
-                categorie : categories.name,
+                categorie : categories,
                 allImg: allImg
             })
         }).then((response) => {
