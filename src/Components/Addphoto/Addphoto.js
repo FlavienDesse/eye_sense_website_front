@@ -16,6 +16,8 @@ import Accordion from "@material-ui/core/Accordion";
 import AccordionSummary from "@material-ui/core/AccordionSummary";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import AccordionDetails from "@material-ui/core/AccordionDetails";
+import DeleteIcon from '@material-ui/icons/Delete';
+
 
 export default function Addphoto() {
     const classes = useStyle();
@@ -23,29 +25,33 @@ export default function Addphoto() {
     const [allImg, setAllImg] = React.useState([])
     const [load, setLoad] = React.useState(true)
     const [categories, setCategories] = React.useState({})
+    const [actualCategorie, setActualCategorie] = React.useState(null)
 
     const {enqueueSnackbar, closeSnackbar} = useSnackbar()
     const theme = useTheme()
 
 
     function loadImage(e) {
-        if (e.target.files && e.target.files[0]) {
-            var reader = new FileReader();
-            let name = e.target.files[0].name;
-            reader.readAsDataURL(e.target.files[0])
+        for (let i = 0; i < e.target.files.length; i++) {
+            if (e.target.files && e.target.files[i]) {
+                var reader = new FileReader();
+                let name = e.target.files[i].name;
+                reader.readAsDataURL(e.target.files[i])
 
-            reader.onload = (res) => {
-                setAllImg((temp) => {
-                    let temp2 = [...temp]
-                    temp2.push({
-                        src: res.target.result,
-                        extension: name.split('.').pop(),
-                        name: name
+                reader.onload = (res) => {
+                    setAllImg((temp) => {
+                        let temp2 = [...temp]
+                        temp2.push({
+                            src: res.target.result,
+                            extension: name.split('.').pop(),
+                            name: name
+                        })
+                        return temp2
                     })
-                    return temp2
-                })
+                }
             }
         }
+
     }
 
 
@@ -92,7 +98,75 @@ export default function Addphoto() {
         getCategories()
     }, [])
 
+    const sendPhotos = (e) => {
+        // eslint-disable-next-line eqeqeq
+        if (actualCategorie === null || allImg === null) {
+            enqueueSnackbar("NONONON", {
+                autoHideDuration: 3000,
+                variant: "error",
+                anchorOrigin: {
+                    vertical: 'bottom',
+                    horizontal: 'center',
+                }
+            });
+        } else {
+            console.log(actualCategorie)
+            setLoad(true)
+            fetch(process.env.REACT_APP_API_URL + "api/categories/addPhotos", {
+                method: "POST",
+                headers: {
+                    "Content-type": "application/json",
+                },
+                body: JSON.stringify({
+                    categorie: actualCategorie,
+                    allImg: allImg
+                })
+            }).then((response) => {
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    return Promise.reject(response);
+                }
+            })
+                .then((response) => {
+                    setLoad(false)
+                    enqueueSnackbar(response.message.message, {
+                        autoHideDuration: 3000,
+                        variant: "success",
+                        anchorOrigin: {
+                            vertical: 'bottom',
+                            horizontal: 'center',
+                        }
+                    });
+                })
+                .catch(function (error) {
+                    setLoad(false)
+                    error.json().then((res) => {
+                        if (res.message) {
+                            enqueueSnackbar(res.message.message, {
+                                autoHideDuration: 3000,
+                                variant: "error",
+                                anchorOrigin: {
+                                    vertical: 'bottom',
+                                    horizontal: 'center',
+                                }
+                            });
+                        }
 
+                    })
+
+                });
+        }
+    }
+    const deleteThisPhotos = (e, index) => {
+        e.stopPropagation()
+        console.log(index)
+        setAllImg(prevState => {
+            let temp = [...prevState]
+            temp.splice(index, 1)
+            return [...temp]
+        })
+    }
 
     return (
 
@@ -101,8 +175,6 @@ export default function Addphoto() {
                 load ? <Spinner loading={true} color={theme.palette.primary.main}/> :
                     <div>
                         <Header/>
-
-
 
 
                         <Container maxWidth="xl">
@@ -124,8 +196,11 @@ export default function Addphoto() {
                                     <Autocomplete
                                         options={categories}
                                         getOptionLabel={(option) => option.name}
-                                        style={{ width: 300 }}
-                                        renderInput={(params) => <TextField {...params} label="Catégorie" variant="outlined" />}
+                                        style={{width: 300}}
+                                        value={actualCategorie}
+                                        onChange={(e, value) => setActualCategorie(value)}
+                                        renderInput={(params) => <TextField {...params} label="Catégorie"
+                                                                            variant="outlined"/>}
                                     />
                                 </Grid>
 
@@ -147,7 +222,10 @@ export default function Addphoto() {
                                         allImg.map((key, index) => (
                                             <Accordion key={index} className={classes.accordion}>
                                                 <AccordionSummary expandIcon={<ExpandMoreIcon/>}>
-                                                    <Typography ariant="h5" component="h2">{key.name}</Typography>
+                                                    <Typography ariant="h5" component="h2"
+                                                                className={classes.titleImg}>{key.name}</Typography>
+                                                    <DeleteIcon className={classes.deleteIcon}
+                                                                onClick={(e) => deleteThisPhotos(e, index)}/>
                                                 </AccordionSummary>
                                                 <AccordionDetails>
                                                     <img className={classes.img} src={key.src}/>
@@ -160,8 +238,8 @@ export default function Addphoto() {
                                 </Grid>
 
                                 <Grid item xs={12}>
-                                    <ButtonStylizedContained type={"submit"} text="ENVOYER" onclick={() => {/*ajouter l'image à la base de donnée*/
-                                    }}/>
+                                    <ButtonStylizedContained type={"submit"} text="ENVOYER"
+                                                             onClickFunction={() => sendPhotos()}/>
                                 </Grid>
 
 
