@@ -58,9 +58,14 @@ export default function MenuStart() {
         interval = setInterval(() => {
             setSeconds(seconds => seconds + 1);
         }, 1000);
-        if (seconds % 5 === 0 && numberRound !==0) {
+        if (seconds % 120 === 0 && numberRound !==0) {
             changePhotos(allPhotos)
-            setNumberRound(numberRound-1)
+            if(numberRound === 0){
+                history.push('/')
+            }
+            else {
+                setNumberRound(numberRound-1)
+            }
         }
         return () => clearInterval(interval);
     }, [seconds]);

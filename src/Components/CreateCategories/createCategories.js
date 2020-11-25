@@ -111,7 +111,6 @@ export default function CreateCategories() {
 
     const deleteThisPhotos = (e,index)=>{
         e.stopPropagation()
-        console.log(index)
         setAllImg(prevState => {
             let temp = [...prevState]
             temp.splice(index,1)
