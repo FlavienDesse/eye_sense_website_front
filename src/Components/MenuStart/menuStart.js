@@ -28,10 +28,11 @@ export default function MenuStart() {
     const refAge = React.createRef()
     const refGender = React.createRef()
     const refBudget = React.createRef()
+    const refRound= React.createRef()
     const [valueAutocomplete, setValueAutocomplete] = React.useState([])
 
 
-    const [errorForm, setErrorForm] = React.useState(["", "", "", "", ""])
+    const [errorForm, setErrorForm] = React.useState(["", "", "", "", "",""])
 
     React.useEffect(() => {
         getCategories()
@@ -78,24 +79,35 @@ export default function MenuStart() {
 
     function startTest() {
         let error = false
-        let errorValue = ["", "", "", "", ""]
+        let errorValue = ["", "", "", "", "",""]
 
         if (refAge.current.value === "") {
+            error = true
             errorValue[0] = "Veuillez précisez l'âge"
         }
         if (refBudget.current.value === "") {
+            error = true
             errorValue[1] = "Veuillez précisez le genre"
         }
         if (refGender.current.value === "") {
+            error = true
             errorValue[2] = "Veuillez précisez un budget"
         }
 
         if (valueAutocomplete.length === 0) {
+            error = true
             errorValue[3] = "Veuillez précisez au moins une catégorie"
+        }
+        if (refRound.current.value === "") {
+            error = true
+            errorValue[4] = "Veuillez précisez le nombre  de tour"
         }
 
         if(!error){
-            localStorage.setItem('Categories', JSON.stringify(categories));
+            localStorage.setItem('test', JSON.stringify({
+                categories: categories,
+                numberRound : refRound.current.value
+            }));
             history.push('/Test')
         }
         setErrorForm(errorValue)
@@ -117,7 +129,7 @@ export default function MenuStart() {
                                                      onClickFunction={() => {
                                                          history.push('/')
                                                      }}/>
-                            <Grid container direction="column" justify="center" alignItems="center" spacing={5}>
+                            <Grid container direction="column" justify="center" alignItems="center" spacing={2}>
                                 <Grid item>
                                     <TextFieldStylizedOutlined className={classes.textField} label={"Age"}
                                                                inputRef={refAge}
@@ -171,6 +183,13 @@ export default function MenuStart() {
                                                                        placeholder="Favorites"/>
                                         )}
                                     />
+                                </Grid>
+                                <Grid item>
+                                    <TextFieldStylizedOutlined className={classes.textField} label={"Nombres de tours"}
+                                                               inputRef={refRound}
+                                                               error={Boolean(errorForm[4])}
+                                                               helperText={errorForm[4]}
+                                                               variant="outlined"/>
                                 </Grid>
                                 <Grid item>
                                     <ButtonStylizedContained onClickFunction={startTest} text="COMMENCER LE TEST"/>
