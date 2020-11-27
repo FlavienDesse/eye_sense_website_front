@@ -6,12 +6,16 @@ import {Container} from "@material-ui/core";
 import {useStyle} from "./style";
 import { useHistory } from "react-router-dom";
 
-export default function MainPage() {
+
+export default function MainPage(props) {
     const classes=useStyle();
     let history = useHistory();
+
+
+
     return (
         <div>
-            <Header></Header>
+            <Header/>
             <Container>
 
                 <Grid container spacing={3} justify={"center"} className={classes.containerGrid}>

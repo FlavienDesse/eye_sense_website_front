@@ -255,7 +255,6 @@ export default function DeleteCategories() {
                                         <AccordionDetails>
                                             <Grid>
                                                 {
-                                                    // console.log(key.allPhotos),
                                                     key.allPhotos.map((key2, index) => (
                                                         <Grid item xs={12}>
                                                             <img

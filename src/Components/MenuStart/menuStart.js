@@ -16,7 +16,7 @@ import {useTheme} from "@material-ui/core/styles";
 import {useSnackbar} from "notistack";
 import TextField from "@material-ui/core/TextField";
 
-export default function MenuStart() {
+export default function MenuStart(props) {
 
     const classes = useStyle();
     const history = useHistory()
@@ -78,6 +78,7 @@ export default function MenuStart() {
 
 
     function startTest() {
+        setLoad(true)
         let error = false
         let errorValue = ["", "", "", "", "",""]
 
@@ -104,12 +105,17 @@ export default function MenuStart() {
         }
 
         if(!error){
+
+
+
+
             localStorage.setItem('test', JSON.stringify({
                 categories: categories,
                 numberRound : refRound.current.value
             }));
-            history.push('/Test')
+           history.push('/Test')
         }
+        setLoad(false)
         setErrorForm(errorValue)
     }
 

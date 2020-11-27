@@ -110,7 +110,6 @@ export default function Addphoto() {
                 }
             });
         } else {
-            console.log(actualCategorie)
             setLoad(true)
             fetch(process.env.REACT_APP_API_URL + "api/categories/addPhotos", {
                 method: "POST",
@@ -160,7 +159,6 @@ export default function Addphoto() {
     }
     const deleteThisPhotos = (e, index) => {
         e.stopPropagation()
-        console.log(index)
         setAllImg(prevState => {
             let temp = [...prevState]
             temp.splice(index, 1)

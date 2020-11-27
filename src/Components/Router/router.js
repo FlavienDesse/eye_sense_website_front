@@ -6,8 +6,14 @@ import MenuStart from "../MenuStart/menuStart";
 import CreateCategories from "../CreateCategories/createCategories";
 import Addphoto from "../Addphoto/Addphoto";
 import Test from "../Test/test"
+import {useSocketIO} from '../Services/socketIO'
 
 export default function Router() {
+
+
+
+
+
     return (
         <BrowserRouter>
             <Switch>
