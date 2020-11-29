@@ -21,17 +21,11 @@ export default function MenuStart(props) {
     const [allDisplayedPhotos, setAllDisplayedPhotos] = React.useState([])
 
 
-    const arrLength = 6;
-    const elRefs = React.useRef([]);
-
-    if (elRefs.current.length !== arrLength) {
-        elRefs.current = Array(arrLength).fill().map((_, i) => elRefs.current[i] || React.createRef());
-    }
-
 
     const changePhotos = (numberRound, allTempPhotos) => {
 
         if (numberRound === 0) {
+            props.state.socket.emit("test finished", true)
             history.push('/')
         } else {
 
@@ -71,6 +65,21 @@ export default function MenuStart(props) {
 
     }, []);
 
+    let arrayPhotosLoaded = []
+    const changePhotosEvent = (e,index,id) => {
+        let bounds = e.target.getBoundingClientRect()
+        arrayPhotosLoaded.push({
+            "_id": id,
+            "topRight": {x: bounds.right, y: bounds.top},
+            "topLeft": {x: bounds.left, y: bounds.top},
+            "bottomRight": {x: bounds.right, y: bounds.bottom},
+            "bottomLeft": {x: bounds.left, y: bounds.bottom}
+        })
+        if(arrayPhotosLoaded.length == 6){
+            props.state.socket.emit("send photos", arrayPhotosLoaded)
+            arrayPhotosLoaded = []
+        }
+    }
 
     return (
         <div>
@@ -82,16 +91,15 @@ export default function MenuStart(props) {
                             <Grid container spacing={4}>
                                 {
                                     allDisplayedPhotos.map((key, index) => {
-                                        if (allDisplayedPhotos.length - 1 === index) {
-                                            console.log(elRefs)
-                                        }
+                                       
 
                                         return (
                                             <Grid item xs={4}>
 
 
-                                                <img className={classes.img} ref={elRefs.current[index]}
+                                                <img className={classes.img}
                                                      id={key}
+                                                     onLoad={(e) => changePhotosEvent(e,index,key) }
                                                      src={process.env.REACT_APP_API_URL + 'api/photos/getPhotos?id=' + key}/>
                                             </Grid>
                                         )
