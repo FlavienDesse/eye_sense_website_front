@@ -19,6 +19,7 @@ export default function MenuStart(props) {
     const [load, setLoad] = React.useState(true)
     const {enqueueSnackbar, closeSnackbar} = useSnackbar()
     const [allDisplayedPhotos, setAllDisplayedPhotos] = React.useState([])
+    const [isUserDataSent, setIsUserDataSent] = React.useState(false)
 
 
 
@@ -26,6 +27,7 @@ export default function MenuStart(props) {
 
         if (numberRound === 0) {
             props.state.socket.emit("test finished", true)
+            setIsUserDataSent(false)
             history.push('/')
         } else {
 
@@ -44,11 +46,8 @@ export default function MenuStart(props) {
 
     React.useEffect(() => {
         let data = JSON.parse(localStorage.getItem('test'));
-        let categories = data.categories
-        let allTempPhotos = []
-        categories.forEach(elem => {
-            allTempPhotos = allTempPhotos.concat(elem.allPhotos)
-        })
+        let categorie = data.categorie
+        let allTempPhotos = categorie.allPhotos
         setLoad(false)
         allTempPhotos = changePhotos(data.numberRound, allTempPhotos)
         data.numberRound = data.numberRound - 1
@@ -81,13 +80,27 @@ export default function MenuStart(props) {
         }
     }
 
+    const sendUserDataEvent = () => {
+        if (!isUserDataSent) {
+            let data = JSON.parse(localStorage.getItem('test'));
+            let dataJson = {
+                "age": data.age,
+                "gender": data.gender,
+                "budget": data.budget,
+                "categorie": data.categorie.name
+            }
+            props.state.socket.emit("send user data", dataJson)
+            setIsUserDataSent(true)
+        }     
+    }
+
     return (
         <div>
             {
                 load ? <Spinner loading={true} color={theme.palette.primary.main}/> :
-                    <div>
+                    <div onLoad={() => sendUserDataEvent() }>
                         <Header/>
-                        <Container>
+                        <Container >
                             <Grid container spacing={4}>
                                 {
                                     allDisplayedPhotos.map((key, index) => {

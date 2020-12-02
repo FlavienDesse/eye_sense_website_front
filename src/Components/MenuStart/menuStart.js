@@ -29,7 +29,7 @@ export default function MenuStart(props) {
     const refGender = React.createRef()
     const refBudget = React.createRef()
     const refRound= React.createRef()
-    const [valueAutocomplete, setValueAutocomplete] = React.useState([])
+    const [valueAutocomplete, setValueAutocomplete] = React.useState()
 
 
     const [errorForm, setErrorForm] = React.useState(["", "", "", "", "",""])
@@ -105,12 +105,11 @@ export default function MenuStart(props) {
         }
 
         if(!error){
-
-
-
-
             localStorage.setItem('test', JSON.stringify({
-                categories: categories,
+                categorie: valueAutocomplete,
+                age: refAge.current.value,
+                gender: refGender.current.value,
+                budget: refBudget.current.value,
                 numberRound : refRound.current.value
             }));
            history.push('/Test')
@@ -160,7 +159,7 @@ export default function MenuStart(props) {
                                 </Grid>
                                 <Grid item>
                                     <Autocomplete
-                                        multiple
+                                        //multiple
 
                                         id="checkboxes-tags-demo"
                                         options={categories}
