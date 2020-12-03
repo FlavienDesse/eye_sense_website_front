@@ -19,45 +19,45 @@ export default function MenuStart(props) {
     const [load, setLoad] = React.useState(true)
     const {enqueueSnackbar, closeSnackbar} = useSnackbar()
     const [allDisplayedPhotos, setAllDisplayedPhotos] = React.useState([])
-    
+
     let isUserDataSent = false
 
 
-    const changePhotos = (numberRound, allTempPhotos) => {
+    const changePhotos = (photosHaveTobeDisplayed) => {
 
-        if (numberRound === 0) {
-            props.state.socket.emit("test finished", true)
-            isUserDataSent = false
-            history.push('/')
-        } else {
-
-
-            let numberOfImageWhichHaveToBeDisplayed = allTempPhotos.length > 6 ? 6 : allTempPhotos.length
-            let tempAllDisplayedPhotos = []
-            for (let i = 0; i < numberOfImageWhichHaveToBeDisplayed; i++) {
-                let random = Math.floor(Math.random() * allTempPhotos.length);
-                tempAllDisplayedPhotos.push(allTempPhotos[random])
-                allTempPhotos.splice(random, 1)
-            }
-            setAllDisplayedPhotos(tempAllDisplayedPhotos)
-            return allTempPhotos
+        var j, x, i;
+        for (i = photosHaveTobeDisplayed.length - 1; i > 0; i--) {
+            j = Math.floor(Math.random() * (i + 1));
+            x = photosHaveTobeDisplayed[i];
+            photosHaveTobeDisplayed[i] = photosHaveTobeDisplayed[j];
+            photosHaveTobeDisplayed[j] = x;
         }
+
+
+        setAllDisplayedPhotos(photosHaveTobeDisplayed)
+
     }
 
     React.useEffect(() => {
         let data = JSON.parse(localStorage.getItem('test'));
         let categorie = data.categorie
-        let allTempPhotos = categorie.allPhotos
+        let numberRound = data.categorie.length
+        let roundRemaining = data.categorie.length
         setLoad(false)
-        allTempPhotos = changePhotos(data.numberRound, allTempPhotos)
-        data.numberRound = data.numberRound - 1
+        changePhotos(categorie[0].allPhotos)
+        roundRemaining = roundRemaining - 1
         let interval = setInterval(() => {
+            if (roundRemaining === 0) {
+                props.state.socket.emit("test finished", true)
+                isUserDataSent = false
+                history.push('/')
+            } else {
+                changePhotos(categorie[numberRound - roundRemaining].allPhotos)
+                roundRemaining = roundRemaining - 1
+            }
 
-            allTempPhotos = changePhotos(data.numberRound, allTempPhotos)
-            data.numberRound = data.numberRound - 1
 
-
-        }, 5000);
+        }, 2000);
 
         return () => clearInterval(interval);
 
@@ -65,7 +65,7 @@ export default function MenuStart(props) {
     }, []);
 
     let arrayPhotosLoaded = []
-    const changePhotosEvent = (e,index,id) => {
+    const changePhotosEvent = (e, index, id) => {
         let bounds = e.target.getBoundingClientRect()
         arrayPhotosLoaded.push({
             "_id": id,
@@ -74,7 +74,8 @@ export default function MenuStart(props) {
             "bottomRight": {x: bounds.right, y: bounds.bottom},
             "bottomLeft": {x: bounds.left, y: bounds.bottom}
         })
-        if(arrayPhotosLoaded.length == 6){
+        // eslint-disable-next-line eqeqeq
+        if (arrayPhotosLoaded.length === allDisplayedPhotos.length) {
             props.state.socket.emit("send photos", arrayPhotosLoaded)
             arrayPhotosLoaded = []
         }
@@ -86,12 +87,11 @@ export default function MenuStart(props) {
             let dataJson = {
                 "age": data.age,
                 "gender": data.gender,
-                "budget": data.budget,
                 "categorie": data.categorie.name
             }
             props.state.socket.emit("send user data", dataJson)
             isUserDataSent = true
-        } 
+        }
     }
 
     return (
@@ -100,19 +100,17 @@ export default function MenuStart(props) {
                 load ? <Spinner loading={true} color={theme.palette.primary.main}/> :
                     <div onLoad={() => sendUserData()}>
                         <Header/>
-                        <Container >
+                        <Container>
                             <Grid container spacing={4}>
                                 {
                                     allDisplayedPhotos.map((key, index) => {
-                                       
+
 
                                         return (
                                             <Grid item xs={4}>
-
-
                                                 <img className={classes.img}
                                                      id={key}
-                                                     onLoad={(e) => changePhotosEvent(e,index,key) }
+                                                     onLoad={(e) => changePhotosEvent(e, index, key)}
                                                      src={process.env.REACT_APP_API_URL + 'api/photos/getPhotos?id=' + key}/>
                                             </Grid>
                                         )

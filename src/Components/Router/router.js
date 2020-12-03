@@ -7,6 +7,7 @@ import CreateCategories from "../CreateCategories/createCategories";
 import Addphoto from "../Addphoto/Addphoto";
 import Test from "../Test/test"
 import {useSocketIO} from '../Services/socketIO'
+import DeleteCategories from "../DeleteCategories/deleteCategories";
 
 export default function Router() {
 
@@ -19,6 +20,7 @@ export default function Router() {
             <Switch>
 
                 <PublicRoute path={"/CreateCategory"} exact component={CreateCategories}/>
+                <PublicRoute path={"/DeleteCategory"} exact component={DeleteCategories}/>
                 <PublicRoute path={"/AddPhotoToCategory"} exact component={Addphoto}/>
                 <PublicRoute path={"/StartTest"} exact component={MenuStart}/>
                 <PublicRoute path={"/Test"} exact component={Test}/>

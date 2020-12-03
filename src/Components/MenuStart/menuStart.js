@@ -14,7 +14,12 @@ import {useHistory} from 'react-router-dom';
 import Spinner from "../Spinner/spinner";
 import {useTheme} from "@material-ui/core/styles";
 import {useSnackbar} from "notistack";
-import TextField from "@material-ui/core/TextField";
+import Select from '@material-ui/core/Select';
+import MenuItem from '@material-ui/core/MenuItem';
+import InputLabel from '@material-ui/core/InputLabel';
+import FormHelperText from '@material-ui/core/FormHelperText';
+import FormControl from '@material-ui/core/FormControl';
+
 
 export default function MenuStart(props) {
 
@@ -26,10 +31,8 @@ export default function MenuStart(props) {
     const [categories, setCategories] = React.useState({})
 
     const refAge = React.createRef()
-    const refGender = React.createRef()
-    const refBudget = React.createRef()
-    const refRound= React.createRef()
-    const [valueAutocomplete, setValueAutocomplete] = React.useState()
+    const [valueGender,setValueGender] = React.useState("")
+    const [valueAutocomplete, setValueAutocomplete] = React.useState(undefined)
 
 
     const [errorForm, setErrorForm] = React.useState(["", "", "", "", "",""])
@@ -54,7 +57,10 @@ export default function MenuStart(props) {
                 }
             })
             .then((response) => {
-                setCategories(response)
+                let categories = response.filter((elem)=> {
+                    return elem.allPhotos.length >= 3
+                })
+                setCategories(categories)
                 setLoad(false)
             })
             .catch(function (error) {
@@ -80,37 +86,27 @@ export default function MenuStart(props) {
     function startTest() {
         setLoad(true)
         let error = false
-        let errorValue = ["", "", "", "", "",""]
+        let errorValue = ["", "", ""]
 
         if (refAge.current.value === "") {
             error = true
             errorValue[0] = "Veuillez précisez l'âge"
         }
-        if (refBudget.current.value === "") {
+        if (valueGender === "") {
             error = true
-            errorValue[1] = "Veuillez précisez le genre"
+            errorValue[1] = "Veuillez précisez le sexe"
         }
-        if (refGender.current.value === "") {
+        if (valueAutocomplete === undefined || valueAutocomplete.length === 0) {
             error = true
-            errorValue[2] = "Veuillez précisez un budget"
+            errorValue[2] = "Veuillez précisez au moins une catégorie"
         }
 
-        if (valueAutocomplete.length === 0) {
-            error = true
-            errorValue[3] = "Veuillez précisez au moins une catégorie"
-        }
-        if (refRound.current.value === "") {
-            error = true
-            errorValue[4] = "Veuillez précisez le nombre  de tour"
-        }
 
         if(!error){
             localStorage.setItem('test', JSON.stringify({
                 categorie: valueAutocomplete,
                 age: refAge.current.value,
-                gender: refGender.current.value,
-                budget: refBudget.current.value,
-                numberRound : refRound.current.value
+                gender: valueGender,
             }));
            history.push('/Test')
         }
@@ -144,22 +140,25 @@ export default function MenuStart(props) {
                                                                variant="outlined"/>
                                 </Grid>
                                 <Grid item>
-                                    <TextFieldStylizedOutlined className={classes.textField} label={"Sexe"}
-                                                               error={Boolean(errorForm[1])}
-                                                               helperText={errorForm[1]}
-                                                               inputRef={refGender}
-                                                               variant="outlined"/>
-                                </Grid>
-                                <Grid item>
-                                    <TextFieldStylizedOutlined className={classes.textField} label={"Budget"}
-                                                               inputRef={refBudget}
-                                                               error={Boolean(errorForm[2])}
-                                                               helperText={errorForm[2]}
-                                                               variant="outlined"/>
+                                    <FormControl variant="outlined" className={classes.textField}  error={Boolean(errorForm[1])}>
+                                        <InputLabel id="demo-simple-select-outlined-label">Sexe</InputLabel>
+                                        <Select
+                                            className={classes.textField}
+                                            value={valueGender}
+                                            label={"Sexe"}
+                                            onChange={(e)=>setValueGender(e.target.value)}
+
+                                        >
+                                            <MenuItem value={"H"}>Homme</MenuItem>
+                                            <MenuItem value={"F"}>Femme</MenuItem>
+                                        </Select>
+                                        <FormHelperText>{errorForm[1]}</FormHelperText>
+                                    </FormControl>
+
                                 </Grid>
                                 <Grid item>
                                     <Autocomplete
-                                        //multiple
+                                        multiple
 
                                         id="checkboxes-tags-demo"
                                         options={categories}
@@ -182,19 +181,12 @@ export default function MenuStart(props) {
                                         className={classes.autoComplete}
                                         renderInput={(params) => (
                                             <TextFieldStylizedOutlined {...params} variant="outlined"
-                                                                       error={Boolean(errorForm[3])}
-                                                                       helperText={errorForm[3]}
+                                                                       error={Boolean(errorForm[2])}
+                                                                       helperText={errorForm[2]}
                                                                        label="Sélectionner une / des catégorie(s)"
                                                                        placeholder="Favorites"/>
                                         )}
                                     />
-                                </Grid>
-                                <Grid item>
-                                    <TextFieldStylizedOutlined className={classes.textField} label={"Nombres de tours"}
-                                                               inputRef={refRound}
-                                                               error={Boolean(errorForm[4])}
-                                                               helperText={errorForm[4]}
-                                                               variant="outlined"/>
                                 </Grid>
                                 <Grid item>
                                     <ButtonStylizedContained onClickFunction={startTest} text="COMMENCER LE TEST"/>
