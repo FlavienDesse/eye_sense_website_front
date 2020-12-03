@@ -19,15 +19,15 @@ export default function MenuStart(props) {
     const [load, setLoad] = React.useState(true)
     const {enqueueSnackbar, closeSnackbar} = useSnackbar()
     const [allDisplayedPhotos, setAllDisplayedPhotos] = React.useState([])
-    const [isUserDataSent, setIsUserDataSent] = React.useState(false)
-
+    
+    let isUserDataSent = false
 
 
     const changePhotos = (numberRound, allTempPhotos) => {
 
         if (numberRound === 0) {
             props.state.socket.emit("test finished", true)
-            setIsUserDataSent(false)
+            isUserDataSent = false
             history.push('/')
         } else {
 
@@ -80,7 +80,7 @@ export default function MenuStart(props) {
         }
     }
 
-    const sendUserDataEvent = () => {
+    const sendUserData = () => {
         if (!isUserDataSent) {
             let data = JSON.parse(localStorage.getItem('test'));
             let dataJson = {
@@ -90,15 +90,15 @@ export default function MenuStart(props) {
                 "categorie": data.categorie.name
             }
             props.state.socket.emit("send user data", dataJson)
-            setIsUserDataSent(true)
-        }     
+            isUserDataSent = true
+        } 
     }
 
     return (
         <div>
             {
                 load ? <Spinner loading={true} color={theme.palette.primary.main}/> :
-                    <div onLoad={() => sendUserDataEvent() }>
+                    <div onLoad={() => sendUserData()}>
                         <Header/>
                         <Container >
                             <Grid container spacing={4}>
