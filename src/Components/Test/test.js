@@ -39,6 +39,7 @@ export default function MenuStart(props) {
     }
 
     React.useEffect(() => {
+        sendUserData()
         let data = JSON.parse(localStorage.getItem('test'));
         let categorie = data.categorie
         let numberRound = data.categorie.length
@@ -82,23 +83,34 @@ export default function MenuStart(props) {
     }
 
     const sendUserData = () => {
-        if (!isUserDataSent) {
-            let data = JSON.parse(localStorage.getItem('test'));
-            let dataJson = {
-                "age": data.age,
-                "gender": data.gender,
-                "categorie": data.categorie.name
-            }
-            props.state.socket.emit("send user data", dataJson)
-            isUserDataSent = true
+
+        let data = JSON.parse(localStorage.getItem('test'));
+
+
+        let nameCategory = []
+        for (let i = 0 ; i < data.categorie.length ; i++){
+            nameCategory.push(data.categorie[i].name)
         }
+        console.log(nameCategory)
+
+        let dataJson = {
+            "age": data.age,
+            "gender": data.gender,
+            "categorie": nameCategory
+        }
+        props.state.socket.emit("send user data", dataJson)
+        isUserDataSent = true
+
+
+
+
     }
 
     return (
         <div>
             {
                 load ? <Spinner loading={true} color={theme.palette.primary.main}/> :
-                    <div onLoad={() => sendUserData()}>
+                    <div >
                         <Header/>
                         <Container>
                             <Grid container spacing={4}>
