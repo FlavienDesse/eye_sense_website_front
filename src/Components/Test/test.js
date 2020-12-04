@@ -57,7 +57,7 @@ export default function MenuStart(props) {
             }
 
 
-        }, 2000);
+        }, 5000);
 
         return () => clearInterval(interval);
 
