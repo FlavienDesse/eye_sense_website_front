@@ -42,10 +42,10 @@ export default function MenuStart(props) {
         sendUserData()
         let data = JSON.parse(localStorage.getItem('test'));
         let categorie = data.categorie
-        let numberRound = data.categorie.length
-        let roundRemaining = data.categorie.length
+        let numberRound = 1// data.categorie.length
+        let roundRemaining =1// data.categorie.length
         setLoad(false)
-        changePhotos(categorie[0].allPhotos)
+        changePhotos(categorie.allPhotos)
         roundRemaining = roundRemaining - 1
         let interval = setInterval(() => {
             if (roundRemaining === 0) {
@@ -58,7 +58,7 @@ export default function MenuStart(props) {
             }
 
 
-        }, 10000);
+        }, 2000);
 
         return () => clearInterval(interval);
 
@@ -88,7 +88,7 @@ export default function MenuStart(props) {
 
 
         let nameCategory = []
-        for (let i = 0 ; i < data.categorie.length ; i++){
+        for (let i = 0; i < data.categorie.length; i++) {
             nameCategory.push(data.categorie[i].name)
         }
         console.log(nameCategory)
@@ -102,15 +102,13 @@ export default function MenuStart(props) {
         isUserDataSent = true
 
 
-
-
     }
 
     return (
         <div>
             {
                 load ? <Spinner loading={true} color={theme.palette.primary.main}/> :
-                    <div >
+                    <div>
                         <Header/>
                         <Container>
                             <Grid container spacing={4}>
@@ -120,10 +118,11 @@ export default function MenuStart(props) {
 
                                         return (
                                             <Grid item xs={4}>
-                                                <img className={classes.img}
-                                                     id={key}
+                                                <div className={classes.containerImg}
                                                      onLoad={(e) => changePhotosEvent(e, index, key)}
-                                                     src={process.env.REACT_APP_API_URL + 'api/photos/getPhotos?id=' + key}/>
+                                                     style={{backgroundImage: "url(" + process.env.REACT_APP_API_URL + 'api/photos/getPhotos?id=' + key + ")"}}>
+
+                                                </div>
                                             </Grid>
                                         )
 

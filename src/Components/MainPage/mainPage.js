@@ -59,6 +59,14 @@ export default function MainPage(props) {
                                                  }>
                         </ButtonStylizedContained>
                     </Grid>
+                    <Grid item xs={12}>
+                        <ButtonStylizedContained text="TOUS LES TESTS"
+                                                 onClickFunction={() => {
+                                                     history.push("/AllTest")
+                                                 }
+                                                 }>
+                        </ButtonStylizedContained>
+                    </Grid>
                 </Grid>
             </Container>
 

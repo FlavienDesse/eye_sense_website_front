@@ -1,9 +1,13 @@
 import {makeStyles} from "@material-ui/core/styles";
 
 export const useStyle = makeStyles((theme) => ({
-    img: {
+
+    containerImg: {
         width: '100%',
-        height: '200px',
+        height: '250px',
+        backgroundRepeat: 'no-repeat',
+        backgroundPosition: 'center',
+        backgroundSize: 'contain',
     },
 
 }));

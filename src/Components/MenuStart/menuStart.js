@@ -158,7 +158,7 @@ export default function MenuStart(props) {
                                 </Grid>
                                 <Grid item>
                                     <Autocomplete
-                                        multiple
+                                        //multiple
 
                                         id="checkboxes-tags-demo"
                                         options={categories}
