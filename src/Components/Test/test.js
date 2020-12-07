@@ -58,7 +58,7 @@ export default function MenuStart(props) {
             }
 
 
-        }, 2000);
+        }, 5000);
 
         return () => clearInterval(interval);
 
@@ -76,6 +76,7 @@ export default function MenuStart(props) {
             "bottomLeft": {x: bounds.left, y: bounds.bottom}
         })
         // eslint-disable-next-line eqeqeq
+        
         if (arrayPhotosLoaded.length === allDisplayedPhotos.length) {
             props.state.socket.emit("send photos", arrayPhotosLoaded)
             arrayPhotosLoaded = []
@@ -86,18 +87,12 @@ export default function MenuStart(props) {
 
         let data = JSON.parse(localStorage.getItem('test'));
 
-
-        let nameCategory = []
-        for (let i = 0; i < data.categorie.length; i++) {
-            nameCategory.push(data.categorie[i].name)
-        }
-        console.log(nameCategory)
-
         let dataJson = {
             "age": data.age,
             "gender": data.gender,
-            "categorie": nameCategory
+            "categorie": data.categorie.name
         }
+
         props.state.socket.emit("send user data", dataJson)
         isUserDataSent = true
 
@@ -118,11 +113,11 @@ export default function MenuStart(props) {
 
                                         return (
                                             <Grid item xs={4}>
-                                                <div className={classes.containerImg}
+                                                <img className={classes.containerImg}
                                                      onLoad={(e) => changePhotosEvent(e, index, key)}
-                                                     style={{backgroundImage: "url(" + process.env.REACT_APP_API_URL + 'api/photos/getPhotos?id=' + key + ")"}}>
+                                                     src= {process.env.REACT_APP_API_URL + 'api/photos/getPhotos?id=' + key}>
 
-                                                </div>
+                                                </img>
                                             </Grid>
                                         )
 
