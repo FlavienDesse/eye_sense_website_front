@@ -20,6 +20,8 @@ import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
 import SkipNextIcon from '@material-ui/icons/SkipNext';
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 import TextField from "@material-ui/core/TextField";
+import h337 from "heatmap.js";
+import clsx from 'clsx';
 
 export default function AllTest(props) {
     const classes = useStyle()
@@ -43,31 +45,32 @@ export default function AllTest(props) {
     const [isActive, setIsActive] = React.useState([]);
 
 
-
     React.useEffect(() => {
 
         let interval = null;
 
-        for (let i = 0 ; i < isActive.length ; i=i+1){
-            if (isActive[i]) {
-                interval = setInterval(() => {
-                    incrementDraw(i)
-                }, 33.3);
-                return (() => clearInterval(interval))
-            }
+        if (isActive[0] === undefined) {
 
+        } else {
+            interval = setInterval(() => {
+                incrementDraw(isActive[0])
+            }, 40);
+            return (() => clearInterval(interval))
         }
 
 
-    }, [isActive,framePosition]);
+    }, [isActive, framePosition]);
 
     function toggle(index) {
-
-        let actualArray =[...isActive]
-        actualArray[index] = 1-isActive[index]
-
+        let actualArray = [...isActive]
+        let pos = actualArray.indexOf(index)
+        if (pos > -1) {
+            actualArray.splice(pos, 1)
+        } else {
+            actualArray.unshift(index)
+        }
         setIsActive(actualArray);
-        console.log(actualArray)
+
     }
 
     function handleResize() {
@@ -82,10 +85,9 @@ export default function AllTest(props) {
     }
 
 
-
     function incrementDraw(index) {
 
-        let actualArray =[...framePosition]
+        let actualArray = [...framePosition]
         if (actualArray[index] + 1 > allTest[index].gaze_history.length - 1) {
             actualArray[index] = 0
         } else {
@@ -107,6 +109,39 @@ export default function AllTest(props) {
         setFramePosition(actualArray)
     }
 
+
+    function drawHeatmap(response) {
+
+
+        for (let i = 0; i < response.length; i++) {
+
+            let heatmapInstance = h337.create({
+                // only container is required, the rest will be defaults
+                container: document.querySelector('.heatMap' + i)
+            });
+
+            let points = []
+
+            for (const point of response[i].gaze_history) {
+                if (point.x > 0 && point.y > 0) {
+                    points.push({
+                        x :Math.floor(point.x),
+                        y : Math.floor(point.y),
+                        value : 1
+                    })
+                }
+
+            }
+
+
+            heatmapInstance.setData({
+                max: 10,
+                data: points
+            });
+        }
+
+
+    }
 
     React.useEffect(() => {
         fetch(process.env.REACT_APP_API_URL + "api/test/getAllTest", {
@@ -130,11 +165,12 @@ export default function AllTest(props) {
                     array.push(0)
                 }
 
-                setIsActive(array)
                 setFramePosition(array)
                 setLoad(false)
                 setAllTest(response)
-                handleResize()
+                drawHeatmap(response)
+                handleResize(response)
+
 
             })
             .catch(function (error) {
@@ -168,10 +204,17 @@ export default function AllTest(props) {
         , []);
 
 
+    React.useEffect(() => {
+
+    })
+
+
     return (
 
         <div>
+
             {
+
                 load ? <Spinner loading={true} color={theme.palette.primary.main}/> :
 
                     <div>
@@ -193,7 +236,7 @@ export default function AllTest(props) {
                                             id="panel1a-header"
                                         >
                                             <Typography
-                                                className={classes.heading}>{moment(key.creationDate).locale('de').format('LLLL')}</Typography>
+                                                className={classes.heading}>{moment(key.creation_date).locale('fr').format('LLLL')}</Typography>
                                         </AccordionSummary>
                                         <AccordionDetails>
                                             <Grid container>
@@ -256,7 +299,7 @@ export default function AllTest(props) {
                                                     </Grid>
 
                                                 </Grid>
-                                                <div ref={refContainerDivDraw}>
+                                                <Grid item xs={12} ref={refContainerDivDraw}>
                                                     <svg id="svg" className="paper" width={dimensions.width}
                                                          height={dimensions.height}>
                                                         <circle
@@ -265,11 +308,17 @@ export default function AllTest(props) {
                                                             r="5"/>
 
                                                     </svg>
-                                                </div>
+                                                </Grid>
+                                                <Grid item xs={12} ref={refContainerDivDraw}>
+                                                    <div className={clsx("heatMap" + index,classes.containerHeatMap)} >
+
+                                                    </div>
+                                                </Grid>
 
                                             </Grid>
 
                                         </AccordionDetails>
+
                                     </Accordion>
                                 })
                             }
