@@ -14,7 +14,29 @@ export const useStyle = makeStyles((theme) => ({
         marginTop: '5px',
         marginBottom: '15px',
     },
-    containerGazeHistory:{
-        border:'2px solid black',
-    }
+    containerGazeHistory: {
+        border: '2px solid black',
+    },
+    title: {
+        font: theme.font.titleFontCategory,
+        marginBottom: '15px',
+        textAlign: 'center',
+    },
+    containerFilter: {
+        border: '2px solid black',
+        marginBottom: '25px',
+        marginTop: '25px',
+        paddingBottom:'25px',
+    },
+    textField: {
+        width: '100%',
+
+    },
+    containerOneItemFilter: {
+        margin: '15px',
+    },
+    containerButtonFilter:{
+      textAlign:'center',
+    },
+
 }));

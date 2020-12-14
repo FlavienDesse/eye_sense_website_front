@@ -27,6 +27,8 @@ import InputLabel from "@material-ui/core/InputLabel";
 import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
 import FormHelperText from "@material-ui/core/FormHelperText";
+import Slider from "@material-ui/core/Slider";
+import Autocomplete from '@material-ui/lab/Autocomplete';
 
 export default function AllTest(props) {
     const classes = useStyle()
@@ -36,9 +38,13 @@ export default function AllTest(props) {
     const [load, setLoad] = React.useState(true)
     const [allTest, setAllTest] = React.useState([])
     const [framePosition, setFramePosition] = React.useState([])
+    const [allCategorie,setAllCategorie] = React.useState([])
 
+    const [filterGender,setFilterGender] = React.useState("")
+    const [filterAge, setFilterAge] = React.useState([0, 100]);
+    const [filterCat, setFilterCat] = React.useState([]);
 
-    const [filterAge,setFilterAge] = React.useState("")
+    const [filterTest,setFilterTest]=React.useState([])
 
 
 
@@ -103,7 +109,7 @@ export default function AllTest(props) {
     function incrementDraw(index) {
 
         let actualArray = [...framePosition]
-        if (actualArray[index] + 1 > allTest[index].gaze_history.length - 1) {
+        if (actualArray[index] + 1 > filterTest[index].gaze_history.length - 1) {
             actualArray[index] = 0
         } else {
             actualArray[index] = actualArray[index] + 1
@@ -116,7 +122,7 @@ export default function AllTest(props) {
     function decrementDraw(index) {
         let actualArray = [...framePosition]
         if (actualArray[index] - 1 < 0) {
-            actualArray[index] = allTest[index].gaze_history.length - 1
+            actualArray[index] = filterTest[index].gaze_history.length - 1
 
         } else {
             actualArray[index] = actualArray[index] - 1
@@ -177,13 +183,18 @@ export default function AllTest(props) {
             .then((response) => {
 
                 let array = []
-
+                let allCat = []
                 for (let i = 0; i < response.length; i++) {
                     array.push(0)
-                }
+                    if(allCat.indexOf(response[i].categorie) === -1){
+                        allCat.push(response[i].categorie)
+                    }
 
+                }
+                setAllCategorie(allCat)
                 setFramePosition(array)
                 setLoad(false)
+                setFilterTest(response)
                 setAllTest(response)
                 handleResize(response)
                 drawHeatmap(response)
@@ -221,9 +232,25 @@ export default function AllTest(props) {
         , []);
 
 
-    React.useEffect(() => {
+    function filterFunctionTest(){
+        let filtering = allTest.filter(test => {
+            let isGood = true
+            if(filterGender !== "" && test.gender !== filterGender){
 
-    })
+                isGood = false
+            }
+            else if(test.age <= filterAge[0] || test.age >= filterAge[1]){
+
+                isGood = false
+            }
+            else if(filterCat.length > 0 && filterCat.indexOf(test.categorie) === -1){
+                isGood = false
+            }
+
+            return isGood
+        })
+        setFilterTest(filtering)
+    }
 
 
     return (
@@ -236,33 +263,87 @@ export default function AllTest(props) {
 
                     <div>
                         <Header/>
-                        <Container maxWidth="xl">
+                        <Container maxWidth="lg">
                             <ButtonStylizedContained textbefore={<ArrowBackIcon/>}
                                                      text={"Retour"} onClickFunction={() => {
                                 history.push('/')
                             }
                             }/>
-                            <Grid container>
-                                <Grid item>
-                                    <FormControl variant="outlined" className={classes.textField}>
-                                        <InputLabel id="demo-simple-select-outlined-label">Sexe</InputLabel>
-                                        <Select
-                                            className={classes.textField}
-                                            value={filterAge}
-                                            label={"Sexe"}
-                                            onChange={(e)=>setFilterAge(e.target.value)}
+                            <Grid container className={classes.containerFilter}>
+                                <Grid item xs={12}>
+                                    <Typography variant="h5" component="h2" className={classes.title}>
+                                        Filtrer
+                                    </Typography>
+                                </Grid>
+                                <Grid item xs={12}>
+                                    <Grid container alignItems={"center"} justify={"center"}>
+                                        <Grid item xs={3} className={classes.containerOneItemFilter}>
 
-                                        >
-                                            <MenuItem value={"H"}>Homme</MenuItem>
-                                            <MenuItem value={"F"}>Femme</MenuItem>
-                                        </Select>
-                                    </FormControl>
+                                            <FormControl variant="outlined" className={classes.textField}>
+                                                <InputLabel id="demo-simple-select-outlined-label">Sexe</InputLabel>
+                                                <Select
+                                                    className={classes.textField}
+                                                    value={filterGender}
+                                                    label={"Sexe"}
+                                                    onChange={(e)=>setFilterGender(e.target.value)}
+
+                                                >
+                                                    <MenuItem value="">
+                                                        <em>None</em>
+                                                    </MenuItem>
+                                                    <MenuItem value={"H"}>Homme</MenuItem>
+                                                    <MenuItem value={"F"}>Femme</MenuItem>
+                                                </Select>
+                                            </FormControl>
+                                        </Grid>
+                                        <Grid item xs={3} className={classes.containerOneItemFilter}>
+                                            <Typography id="range-slider" gutterBottom>
+                                                Age :
+                                            </Typography>
+                                            <Slider
+                                                className={classes.slider}
+                                                value={filterAge}
+                                                onChange={(event, newValue) => {
+                                                    setFilterAge(newValue)
+                                                }}
+                                                valueLabelDisplay="auto"
+                                            />
+                                        </Grid>
+                                        <Grid item xs={3} className={classes.containerOneItemFilter}>
+
+                                            <Autocomplete
+                                                multiple
+                                                onChange={(e, value) => {
+                                                    setFilterCat(value)
+                                                }}
+                                                id="tags-outlined"
+                                                options={allCategorie}
+                                                getOptionLabel={(option) => option}
+                                                filterSelectedOptions
+                                                renderInput={(params) => (
+                                                    <TextField
+                                                        {...params}
+                                                        variant="outlined"
+                                                        placeholder="Catégories"
+                                                    />
+                                                )}
+                                            />
+                                        </Grid>
+                                    </Grid>
+                                </Grid>
+                                <Grid item xs={12} className={classes.containerButtonFilter}>
+                                    <ButtonStylizedContained text="FILTRER"
+                                                             onClickFunction={() => {
+                                                                 filterFunctionTest()
+                                                             }
+                                                             }>
+                                    </ButtonStylizedContained>
 
                                 </Grid>
                             </Grid>
 
                             {
-                                allTest.map((key, index) => {
+                                filterTest.map((key, index) => {
                                     return <Accordion className={classes.containerAccordion}>
                                         <AccordionSummary
                                             expandIcon={<ExpandMoreIcon/>}
@@ -346,6 +427,7 @@ export default function AllTest(props) {
                                                         {
                                                             key.photos_info.map((photo, index2) => {
                                                                 return <image
+                                                                    key={index2}
                                                                     xlinkHref={process.env.REACT_APP_API_URL + 'api/photos/getPhotos?id=' + photo._id}
                                                                     x={Math.floor(photo.left * dimensions.width / key.screen_size.width)}
                                                                     y={photo.top * dimensions.height / key.screen_size.height}
