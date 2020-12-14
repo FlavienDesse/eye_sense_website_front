@@ -22,6 +22,11 @@ import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 import TextField from "@material-ui/core/TextField";
 import h337 from "heatmap.js";
 import clsx from 'clsx';
+import FormControl from "@material-ui/core/FormControl";
+import InputLabel from "@material-ui/core/InputLabel";
+import Select from "@material-ui/core/Select";
+import MenuItem from "@material-ui/core/MenuItem";
+import FormHelperText from "@material-ui/core/FormHelperText";
 
 export default function AllTest(props) {
     const classes = useStyle()
@@ -31,6 +36,16 @@ export default function AllTest(props) {
     const [load, setLoad] = React.useState(true)
     const [allTest, setAllTest] = React.useState([])
     const [framePosition, setFramePosition] = React.useState([])
+
+
+    const [filterAge,setFilterAge] = React.useState("")
+
+
+
+
+
+
+
 
 
     const refContainerDivDraw = React.useRef("test1")
@@ -115,27 +130,29 @@ export default function AllTest(props) {
 
         for (let i = 0; i < response.length; i++) {
 
+
             let heatmapInstance = h337.create({
                 // only container is required, the rest will be defaults
                 container: document.querySelector('.heatMap' + i)
             });
 
             let points = []
-
             for (const point of response[i].gaze_history) {
-                if (point.x > 0 && point.y > 0) {
-                    points.push({
-                        x :Math.floor(point.x),
-                        y : Math.floor(point.y),
-                        value : 1
-                    })
-                }
+                points.push({
+                    x: Math.floor(point.x * refContainerDivDraw.current.offsetWidth / response[i].screen_size.width),
+                    y: Math.floor(point.y * dimensions.height / response[i].screen_size.height),
+                    value: 1
+                })
 
             }
 
-
+            heatmapInstance.configure({
+                maxOpacity: .75,
+                minOpacity: 0,
+                blur: .75
+            })
             heatmapInstance.setData({
-                max: 10,
+                max: 20,
                 data: points
             });
         }
@@ -168,8 +185,8 @@ export default function AllTest(props) {
                 setFramePosition(array)
                 setLoad(false)
                 setAllTest(response)
-                drawHeatmap(response)
                 handleResize(response)
+                drawHeatmap(response)
 
 
             })
@@ -225,7 +242,24 @@ export default function AllTest(props) {
                                 history.push('/')
                             }
                             }/>
+                            <Grid container>
+                                <Grid item>
+                                    <FormControl variant="outlined" className={classes.textField}>
+                                        <InputLabel id="demo-simple-select-outlined-label">Sexe</InputLabel>
+                                        <Select
+                                            className={classes.textField}
+                                            value={filterAge}
+                                            label={"Sexe"}
+                                            onChange={(e)=>setFilterAge(e.target.value)}
 
+                                        >
+                                            <MenuItem value={"H"}>Homme</MenuItem>
+                                            <MenuItem value={"F"}>Femme</MenuItem>
+                                        </Select>
+                                    </FormControl>
+
+                                </Grid>
+                            </Grid>
 
                             {
                                 allTest.map((key, index) => {
@@ -248,6 +282,12 @@ export default function AllTest(props) {
                                                 <Grid item xs={12}>
                                                     <Typography>
                                                         Catégorie : {key.categorie}
+                                                    </Typography>
+
+                                                </Grid>
+                                                <Grid item xs={12}>
+                                                    <Typography>
+                                                        Age : {key.age}
                                                     </Typography>
 
                                                 </Grid>
@@ -299,21 +339,29 @@ export default function AllTest(props) {
                                                     </Grid>
 
                                                 </Grid>
-                                                <Grid item xs={12} ref={refContainerDivDraw}>
+                                                <Grid item xs={12} ref={refContainerDivDraw}
+                                                      className={clsx("heatMap" + index, classes.containerHeatMap)}>
                                                     <svg id="svg" className="paper" width={dimensions.width}
                                                          height={dimensions.height}>
+                                                        {
+                                                            key.photos_info.map((photo, index2) => {
+                                                                return <image
+                                                                    xlinkHref={process.env.REACT_APP_API_URL + 'api/photos/getPhotos?id=' + photo._id}
+                                                                    x={Math.floor(photo.left * dimensions.width / key.screen_size.width)}
+                                                                    y={photo.top * dimensions.height / key.screen_size.height}
+                                                                    height={(photo.bottom - photo.top) / key.screen_size.height * dimensions.height}
+                                                                    width={(photo.right - photo.left) / key.screen_size.width * dimensions.width}/>
+                                                            })
+                                                        }
                                                         <circle
-                                                            cx={dimensions.width * key.gaze_history[framePosition[index]].x / 1980}
-                                                            cy={dimensions.height * key.gaze_history[framePosition[index]].y / 920}
+                                                            cx={dimensions.width * key.gaze_history[framePosition[index]].x / key.screen_size.width}
+                                                            cy={dimensions.height * key.gaze_history[framePosition[index]].y / key.screen_size.height}
                                                             r="5"/>
+
 
                                                     </svg>
                                                 </Grid>
-                                                <Grid item xs={12} ref={refContainerDivDraw}>
-                                                    <div className={clsx("heatMap" + index,classes.containerHeatMap)} >
 
-                                                    </div>
-                                                </Grid>
 
                                             </Grid>
 

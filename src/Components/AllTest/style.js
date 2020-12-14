@@ -14,7 +14,7 @@ export const useStyle = makeStyles((theme) => ({
         marginTop: '5px',
         marginBottom: '15px',
     },
-    containerHeatMap: {
-        height:'250px',
-    },
+    containerGazeHistory:{
+        border:'2px solid black',
+    }
 }));
