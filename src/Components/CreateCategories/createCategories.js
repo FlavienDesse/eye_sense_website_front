@@ -167,6 +167,7 @@ export default function CreateCategories() {
                                         </AccordionSummary>
                                         <AccordionDetails>
                                             <img className={classes.img} src={key.src}/>
+
                                         </AccordionDetails>
 
                                     </Accordion>
