@@ -112,8 +112,8 @@ export default function MenuStart(props) {
 
 
                                         return (
-                                            <Grid item xs={4}>
-                                                <img className={classes.containerImg}
+                                            <Grid item xs={4} className={classes.containerImg}>
+                                                <img className={classes.img}
                                                      onLoad={(e) => changePhotosEvent(e, index, key)}
                                                      src= {process.env.REACT_APP_API_URL + 'api/photos/getPhotos?id=' + key}>
 

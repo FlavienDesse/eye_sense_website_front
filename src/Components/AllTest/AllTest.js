@@ -155,7 +155,7 @@ export default function AllTest(props) {
             heatmapInstance.configure({
                 maxOpacity: .75,
                 minOpacity: 0,
-                blur: .75
+                blur: .75,
             })
             heatmapInstance.setData({
                 max: 20,
@@ -436,6 +436,8 @@ export default function AllTest(props) {
                                                             })
                                                         }
                                                         <circle
+                                                            stroke="black"
+                                                            fill={"white"}
                                                             cx={dimensions.width * key.gaze_history[framePosition[index]].x / key.screen_size.width}
                                                             cy={dimensions.height * key.gaze_history[framePosition[index]].y / key.screen_size.height}
                                                             r="5"/>
